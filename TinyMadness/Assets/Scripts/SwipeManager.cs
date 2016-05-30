@@ -44,16 +44,25 @@ public class SwipeManager : MonoBehaviour
 
 			if(swipeAngle < 45)
 			{
-				spawnedObj.GetComponent<Renderer>().material.color = Color.green;
+				spawnedObj.GetComponent<Renderer>().material.color = Color.yellow;
+				//spawnedObj.transform.position = Vector2.MoveTowards(spawnedObj.transform.position, new Vector2(spawnedObj.transform.position.x + 100, spawnedObj.transform.position.y), 2.0f * Time.deltaTime);
+				//Destroy(spawnedObj);
+			}
+			else if(swipeAngle > 45 && swipeAngle < 135)
+			{
+				spawnedObj.GetComponent<Renderer>().material.color = Color.blue;
+				//Destroy(spawnedObj);
 			}
 			else if(swipeAngle > 135)
 			{
-				spawnedObj.GetComponent<Renderer>().material.color = Color.red;
+				spawnedObj.GetComponent<Renderer>().material.color = Color.black;
+				//Destroy(spawnedObj);
 			}
 			else
 			{
-				spawnedObj.GetComponent<Renderer>().material.color = Color.blue;
+				Debug.Log("Down");
 			}
+			
 		}
 	#endif
 	#if UNITY_ANDROID
