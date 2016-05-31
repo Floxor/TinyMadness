@@ -31,10 +31,10 @@ public class SpawnManager : MonoBehaviour
 			SpawnRandomObj();
 		}
 
-		if(spawnedObj == null)
-		{
-			canSpawn = true;
-		}
+		//if(spawnedObj == null)
+		//{
+		//	canSpawn = true;
+		//}
 	
 	}
 
@@ -53,7 +53,7 @@ public class SpawnManager : MonoBehaviour
 		//Debug.Log(tags[randomTagIndex]);
 
 		SwipeManager.Instance.spawnedObj = spawnedObj;
-		StartCoroutine(ObjLifeReduction());
+		//StartCoroutine(ObjLifeReduction());
 	}
 
 	public void RandomObjColor()
@@ -72,15 +72,18 @@ public class SpawnManager : MonoBehaviour
 	IEnumerator ObjLifeReduction()
 	{
 		float time = objLife;
-		while(time > 0)
+		if(!SwipeManager.Instance.couldBeSwipe)
 		{
-			time -= Time.deltaTime;
-			yield return new WaitForEndOfFrame();
-		}
+			while (time > 0)
+			{
+				time -= Time.deltaTime;
+				yield return new WaitForEndOfFrame();
+			}
 
-		Destroy(spawnedObj);
-		SwipeManager.Instance.spawnedObj = null;
-		GameplayManager.Instance.ResetScore();
+			Destroy(spawnedObj);
+			SwipeManager.Instance.spawnedObj = null;
+			GameplayManager.Instance.ResetScore();
+		}
 
 		StopCoroutine("ObjLifeReduction");
 	}

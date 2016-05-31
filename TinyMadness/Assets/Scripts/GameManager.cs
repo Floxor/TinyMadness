@@ -64,14 +64,14 @@ public class GameManager : MonoBehaviour
 	{
 		Debug.Log("Start Time Attack Game");
 		MenuManager.GetInstance().bringOutPanel(MenuManager.GetInstance().activeMenuPanel);
-		StartCoroutine(CountDown()); //placeholder 
+		StartCoroutine(CountDown(GameplayManager.Instance.GoTimeAttackGame)); //placeholder 
 	}
 
 	public void StartSurvivalGame()
 	{
 		Debug.Log("Start Survival Attack Game");
 		MenuManager.GetInstance().bringOutPanel(MenuManager.GetInstance().activeMenuPanel);
-		StartCoroutine(CountDown()); //placeholder 
+		StartCoroutine(CountDown(GameplayManager.Instance.GoSurvivalGame)); //placeholder 
 	}
 
 	public static GameManager GetInstance()

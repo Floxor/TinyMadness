@@ -9,10 +9,10 @@ public class SwipeManager : MonoBehaviour
 
 	public GameObject	spawnedObj;
 	public float		speed = 10.0f;
+	public bool			couldBeSwipe;
 
 	public OnSwipeDelegate OnSwipe;
 
-	private bool		couldBeSwipe;
 	private Vector2		startPos;
 	private float		startTime;
 	[SerializeField]
@@ -25,6 +25,11 @@ public class SwipeManager : MonoBehaviour
 	void Awake ()
 	{
 		Instance = this;
+	}
+
+	void Start()
+	{
+		OnSwipe += MoveTo;
 	}
 	
 	void Update ()
@@ -50,22 +55,21 @@ public class SwipeManager : MonoBehaviour
 			{
 				if (swipeAngle < 45)
 				{
-					//spawnedObj.GetComponent<Renderer>().material.color = Color.yellow;
 					OnSwipe(2);
-					MoveTo(2);
+					//MoveTo(2);
 				}
 				else if (swipeAngle > 45 && swipeAngle < 135 && (Mathf.Sign(Input.mousePosition.y - startPos.y) == 1))
 				{
-					//spawnedObj.GetComponent<Renderer>().material.color = Color.blue;
 					OnSwipe(1);
-					MoveTo(1);
+					//MoveTo(1);
 				}
 				else if (swipeAngle > 135)
 				{
-					//spawnedObj.GetComponent<Renderer>().material.color = Color.black;
 					OnSwipe(0);
-					MoveTo(0);
+					//MoveTo(0);
 				}
+
+				couldBeSwipe = false;
 			}
 		}
 	#endif
@@ -86,6 +90,7 @@ public class SwipeManager : MonoBehaviour
 					if (Vector2.Angle(Vector3.right, (Vector2)Input.mousePosition - startPos) > comfortZone)
 					{
 						couldBeSwipe = false;
+						Camera.main.backgroundColor = Color.red;
 					}
 					break;
 
@@ -124,10 +129,8 @@ public class SwipeManager : MonoBehaviour
 
 	public void MoveTo(int _shapeId)
 	{
-		//if(gameObject.GetComponent<GameplayManager>().enabled)
+		if(GameplayManager.Instance.timeAttackGame || GameplayManager.Instance.survivalGame)
 			StartCoroutine(MoveInGameplayCoroutine(_shapeId));
-		//else if (gameObject.GetComponent<MenuManager>().enabled)
-		//	StartCoroutine(MoveInMenuCoroutine(_shapeId));
 	}
 
 	public IEnumerator MoveInGameplayCoroutine(int __shapeId)
@@ -148,36 +151,12 @@ public class SwipeManager : MonoBehaviour
 		}
 		else
 		{
-			GameplayManager.Instance.ResetScore();
+			if (GameplayManager.Instance.timeAttackGame)
+				GameplayManager.Instance.ResetScore();
+			else
+				GameplayManager.Instance.GameOver();
 		}
 		Destroy(spawnedObj);
 		StopCoroutine("MoveInGameplayCoroutine");
 	}
-
-	//public IEnumerator MoveInMenuCoroutine(int __optionId)
-	//{
-	//	while (spawnedObj.transform.position != GameplayManager.Instance.shapes[__optionId].transform.position)
-	//	{
-	//		spawnedObj.transform.position = Vector2.MoveTowards(spawnedObj.transform.position, GameplayManager.Instance.shapes[__optionId].transform.position, speed * Time.deltaTime);
-	//		yield return new WaitForEndOfFrame();
-	//	}
-
-	//	if (spawnedObj.transform.tag == GameplayManager.Instance.shapes[__optionId].transform.tag && SpawnManager.Instance.spawnedObjMat.material.color == Color.green)
-	//	{
-	//		GameplayManager.Instance.AddScore();
-	//	}
-	//	else if (spawnedObj.transform.tag != GameplayManager.Instance.shapes[__optionId].transform.tag && SpawnManager.Instance.spawnedObjMat.material.color == Color.red)
-	//	{
-	//		GameplayManager.Instance.AddScore();
-	//	}
-	//	else
-	//	{
-	//		if(GameplayManager.Instance.timeAttackGame)
-	//			GameplayManager.Instance.ResetScore();
-	//		else if(GameplayManager.Instance.survivalGame)
-	//			GameplayManager.Instance.GameOver();
-	//	}
-	//	Destroy(spawnedObj);
-	//	StopCoroutine("MoveInMenuCoroutine");
-	//}
 }

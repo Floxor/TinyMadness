@@ -8,18 +8,20 @@ public class GameplayManager : MonoBehaviour
 
 	public GameObject[] shapes;
 	public Text			scoreText;
+	public Text			clockText;
 	public float		score = 0;
 	public float		actualScore = 0;
 	public float		highScore = 0;
 	public bool			survivalGame = false;
 	public bool			timeAttackGame = false;
-	public float		clock;
+	public float		clock = 500.0f;
 	public float		actualClock;
 
 	void Start ()
 	{
 		Instance = this;
 		scoreText.text = actualScore.ToString();
+		clockText.text = actualClock.ToString("0.00");
 	}
 
 	void Update()
@@ -29,28 +31,33 @@ public class GameplayManager : MonoBehaviour
 			actualScore = score;
 			scoreText.text = actualScore.ToString();
 		}
+		clockText.text = actualClock.ToString("0.00");
 	}
 
 	public void GoTimeAttackGame()
 	{
 		timeAttackGame = true;
+		StartNewGame();
 		StartCoroutine(ReduceClock());
 	}
 
 	public void GoSurvivalGame()
 	{
 		survivalGame = true;
+		StartNewGame();
 	}
 
 	public void StartNewGame()
 	{
-		//Transistion ?
-		//Décompte ?
 		SpawnManager.Instance.canSpawn = true;
 	}
 
 	public void GameOver()
 	{
+		SpawnManager.Instance.canSpawn = false;
+		timeAttackGame = false;
+		survivalGame = false;
+
 		if(actualScore > highScore)
 		{
 			actualScore = highScore;
@@ -80,9 +87,9 @@ public class GameplayManager : MonoBehaviour
 		while (actualClock > 0)
 		{
 			actualClock -= Time.deltaTime;
-			actualClock.ToString("0.00");
 			yield return new WaitForEndOfFrame();
 		}
+		actualClock = 0;
 		GameOver();
 		StopCoroutine("ReduceClock");
 	}
