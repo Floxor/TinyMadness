@@ -1,11 +1,15 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEngine.Events;
 
 [RequireComponent(typeof(Animator))]
 public class MenuElement : MonoBehaviour
 {
 	public string inAnim;
 	public string outAnim;
+	[SerializeField]
+	private UnityEvent buttonCallback;
+
 	private Animator animator;
 
 	void Start()
@@ -25,6 +29,11 @@ public class MenuElement : MonoBehaviour
 	public void playInAnim()
 	{
 		animator.SetTrigger(inAnim);
+	}
+
+	public void callback()
+	{
+		buttonCallback.Invoke();
 	}
 
 

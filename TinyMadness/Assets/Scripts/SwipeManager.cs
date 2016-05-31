@@ -4,10 +4,13 @@ using System.Collections.Generic;
 
 public class SwipeManager : MonoBehaviour
 {
+	public delegate void OnSwipeDelegate(int direction);
 	public static SwipeManager Instance;
 
 	public GameObject	spawnedObj;
 	public float		speed = 10.0f;
+
+	public OnSwipeDelegate OnSwipe;
 
 	private bool		couldBeSwipe;
 	private Vector2		startPos;
@@ -19,7 +22,7 @@ public class SwipeManager : MonoBehaviour
 	[SerializeField]
 	private float		minSwipeDist = 44.0f;
 
-	void Start ()
+	void Awake ()
 	{
 		Instance = this;
 	}
@@ -48,16 +51,19 @@ public class SwipeManager : MonoBehaviour
 				if (swipeAngle < 45)
 				{
 					//spawnedObj.GetComponent<Renderer>().material.color = Color.yellow;
+					OnSwipe(2);
 					MoveTo(2);
 				}
 				else if (swipeAngle > 45 && swipeAngle < 135 && (Mathf.Sign(Input.mousePosition.y - startPos.y) == 1))
 				{
 					//spawnedObj.GetComponent<Renderer>().material.color = Color.blue;
+					OnSwipe(1);
 					MoveTo(1);
 				}
 				else if (swipeAngle > 135)
 				{
 					//spawnedObj.GetComponent<Renderer>().material.color = Color.black;
+					OnSwipe(0);
 					MoveTo(0);
 				}
 			}

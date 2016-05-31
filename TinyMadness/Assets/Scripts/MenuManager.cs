@@ -4,13 +4,32 @@ using UnityEngine.UI;
 
 public class MenuManager : MonoBehaviour
 {
+	private static MenuManager _instance;
+	private bool _alreadyInstantiated;
 
 	public GameObject activeMenuPanel;
 	public GameObject[] menuPanels;
 
-	void Start() 
+	public MenuElement[] swipeCallbacks;
+
+	void Awake()
 	{
+		if(_instance != null)
+			_alreadyInstantiated = true;
+		else
+			_instance = this;
+	}
+
+	void Start()
+	{
+		if (_alreadyInstantiated)
+		{
+			Destroy(gameObject);
+			return;
+		}
+
 		StartCoroutine(delayedStart());
+
 	}
 
 	IEnumerator delayedStart()
@@ -23,6 +42,8 @@ public class MenuManager : MonoBehaviour
 			bringInPanel(menuPanels[0]);
 		else
 			Debug.LogError("No default menu set and no panels to bring in for MenuManager !");
+
+		SwipeManager.Instance.OnSwipe += OnSwipe;
 	}
 
 	void Update() { }
@@ -53,9 +74,23 @@ public class MenuManager : MonoBehaviour
 		}	
 	}
 
+
+	void OnSwipe(int swipeDirection)
+	{
+		if (swipeCallbacks[swipeDirection] != null)
+			swipeCallbacks[swipeDirection].callback();
+
+		Debug.Log("user has swiped: " + swipeDirection);
+	}
+
 	public void switchToPanel(GameObject newMenuPanel)
 	{
 		bringOutPanel(activeMenuPanel);
 		bringInPanel(newMenuPanel);
+	}
+
+	public static MenuManager GetInstance()
+	{
+		return _instance;
 	}
 }

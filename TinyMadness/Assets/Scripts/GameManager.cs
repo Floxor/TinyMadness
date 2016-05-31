@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System;
 
 public class GameManager : MonoBehaviour
 {
@@ -16,8 +17,12 @@ public class GameManager : MonoBehaviour
 
 	void Start ()
 	{
-		if (_alreadyInstantiated)
+		if (_alreadyInstantiated) 
+		{
 			Destroy(gameObject);
+			return;
+		}
+
 	}
 	
 	void Update ()
@@ -40,7 +45,7 @@ public class GameManager : MonoBehaviour
 		StartCoroutine(CountDown());
 	}
 
-	IEnumerator CountDown()
+	IEnumerator CountDown(Action callBack = null)
 	{
 		yield return new WaitForSeconds(0.5f);
 		Debug.Log(3);
@@ -50,17 +55,23 @@ public class GameManager : MonoBehaviour
 		Debug.Log(1);
 		yield return new WaitForSeconds(0.5f);
 		Debug.Log("GO !");
+
+		if(callBack != null)
+			callBack();
 	}
-
-
+	
 	public void StartTimeAttackGame()
 	{
 		Debug.Log("Start Time Attack Game");
+		MenuManager.GetInstance().bringOutPanel(MenuManager.GetInstance().activeMenuPanel);
+		StartCoroutine(CountDown()); //placeholder 
 	}
 
 	public void StartSurvivalGame()
 	{
 		Debug.Log("Start Survival Attack Game");
+		MenuManager.GetInstance().bringOutPanel(MenuManager.GetInstance().activeMenuPanel);
+		StartCoroutine(CountDown()); //placeholder 
 	}
 
 	public static GameManager GetInstance()
