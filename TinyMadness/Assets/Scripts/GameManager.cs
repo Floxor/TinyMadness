@@ -49,11 +49,18 @@ public class GameManager : MonoBehaviour
 	{
 		yield return new WaitForSeconds(0.5f);
 		Debug.Log(3);
+		MenuManager.GetInstance().ZoomInObject(MenuManager.GetInstance().countDownObject.transform.GetChild(0).gameObject, 0.5f);
+		
 		yield return new WaitForSeconds(0.5f);
 		Debug.Log(2);
+		MenuManager.GetInstance().ZoomInObject(MenuManager.GetInstance().countDownObject.transform.GetChild(1).gameObject, 0.5f);
+		
 		yield return new WaitForSeconds(0.5f);
+		MenuManager.GetInstance().ZoomInObject(MenuManager.GetInstance().countDownObject.transform.GetChild(2).gameObject, 0.5f);
 		Debug.Log(1);
+		
 		yield return new WaitForSeconds(0.5f);
+		MenuManager.GetInstance().ZoomInObject(MenuManager.GetInstance().countDownObject.transform.GetChild(3).gameObject, 0.5f);
 		Debug.Log("GO !");
 
 		if(callBack != null)
