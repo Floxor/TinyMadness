@@ -86,7 +86,7 @@ public class MenuManager : MonoBehaviour
 			if (menuElements[i].GetComponent<Button>() != null)
 				menuElements[i].GetComponent<Button>().interactable = true;
 		}
-
+		userIsInMenu = true;
 		activeMenuPanel = newMenuPanel;
 	}
 
@@ -99,7 +99,8 @@ public class MenuManager : MonoBehaviour
 			menuElements[i].playOutAnim();
 			if (menuElements[i].GetComponent<Button>() != null)
 				menuElements[i].GetComponent<Button>().interactable = false;
-		}	
+		}
+		userIsInMenu = false;
 	}
 
 
@@ -111,7 +112,7 @@ public class MenuManager : MonoBehaviour
 		if (swipeCallbacks[swipeDirection] != null)
 			swipeCallbacks[swipeDirection].callback();
 
-		Debug.Log("user has swiped: " + swipeDirection);
+		//Debug.Log("user has swiped: " + swipeDirection);
 	}
 
 	public void switchToPanel(GameObject newMenuPanel)

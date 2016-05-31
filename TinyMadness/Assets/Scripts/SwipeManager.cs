@@ -56,17 +56,14 @@ public class SwipeManager : MonoBehaviour
 				if (swipeAngle < 45)
 				{
 					OnSwipe(2);
-					//MoveTo(2);
 				}
 				else if (swipeAngle > 45 && swipeAngle < 135 && (Mathf.Sign(Input.mousePosition.y - startPos.y) == 1))
 				{
 					OnSwipe(1);
-					//MoveTo(1);
 				}
 				else if (swipeAngle > 135)
 				{
 					OnSwipe(0);
-					//MoveTo(0);
 				}
 
 				couldBeSwipe = false;
@@ -103,28 +100,27 @@ public class SwipeManager : MonoBehaviour
 					Vector2 directionSwipe = (Vector2)Input.mousePosition - startPos;
 					float swipeAngle = Vector2.Angle(Vector3.right, directionSwipe);
 
-					if(swipeTime < maxSwipeTime)
+					if (swipeTime < maxSwipeTime)
 					{
 						if (swipeAngle < 45)
 						{
-							spawnedObj.GetComponent<Renderer>().material.color = Color.yellow;
-							MoveTo(2);
+							OnSwipe(2);
 						}
 						else if (swipeAngle > 45 && swipeAngle < 135 && (Mathf.Sign(Input.mousePosition.y - startPos.y) == 1))
 						{
-							spawnedObj.GetComponent<Renderer>().material.color = Color.blue;
-							MoveTo(1);
+							OnSwipe(1);
 						}
 						else if (swipeAngle > 135)
 						{
-							spawnedObj.GetComponent<Renderer>().material.color = Color.black;
-							MoveTo(0);
+							OnSwipe(0);
 						}
+
+						couldBeSwipe = false;
 					}
 					break;
 			}
 		}
-#endif
+	#endif
 	}
 
 	public void MoveTo(int _shapeId)
@@ -154,9 +150,13 @@ public class SwipeManager : MonoBehaviour
 			if (GameplayManager.Instance.timeAttackGame)
 				GameplayManager.Instance.ResetScore();
 			else
+			{
 				GameplayManager.Instance.GameOver();
+				StopCoroutine("MoveInGameplayCoroutine");
+			}
 		}
 		Destroy(spawnedObj);
+		SpawnManager.Instance.canSpawn = true;
 		StopCoroutine("MoveInGameplayCoroutine");
 	}
 }

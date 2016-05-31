@@ -57,11 +57,14 @@ public class GameplayManager : MonoBehaviour
 		SpawnManager.Instance.canSpawn = false;
 		timeAttackGame = false;
 		survivalGame = false;
+		Destroy(SwipeManager.Instance.spawnedObj);
 
 		if(actualScore > highScore)
 		{
-			actualScore = highScore;
+			highScore = actualScore;
 		}
+
+		MenuManager.GetInstance().bringInPanel(MenuManager.GetInstance().activeMenuPanel);
 
 		//Go Menu window Ou Game Over window 
 	}

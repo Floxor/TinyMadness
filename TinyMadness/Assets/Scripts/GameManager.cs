@@ -71,16 +71,14 @@ public class GameManager : MonoBehaviour
 	{
 		Debug.Log("Start Time Attack Game");
 		MenuManager.GetInstance().bringOutPanel(MenuManager.GetInstance().activeMenuPanel);
-		MenuManager.GetInstance().userIsInMenu = false;
-		StartCoroutine(CountDown()); //placeholder 
+		StartCoroutine(CountDown(GameplayManager.Instance.GoTimeAttackGame));
 	}
 
 	public void StartSurvivalGame()
 	{
 		Debug.Log("Start Survival Attack Game");
 		MenuManager.GetInstance().bringOutPanel(MenuManager.GetInstance().activeMenuPanel);
-		MenuManager.GetInstance().userIsInMenu = false;
-		StartCoroutine(CountDown(/* ICI */)); //placeholder 
+		StartCoroutine(CountDown(GameplayManager.Instance.GoSurvivalGame));
 	}
 
 	public static GameManager GetInstance()
