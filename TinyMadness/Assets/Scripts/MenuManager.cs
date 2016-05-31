@@ -13,6 +13,9 @@ public class MenuManager : MonoBehaviour
 
 	public MenuElement[] swipeCallbacks;
 
+	[HideInInspector]
+	public bool userIsInMenu = true;
+
 	void Awake()
 	{
 		if(_instance != null)
@@ -102,6 +105,9 @@ public class MenuManager : MonoBehaviour
 
 	void OnSwipe(int swipeDirection)
 	{
+		if (!userIsInMenu)
+			return;
+
 		if (swipeCallbacks[swipeDirection] != null)
 			swipeCallbacks[swipeDirection].callback();
 
