@@ -6,14 +6,14 @@ public class SpawnManager : MonoBehaviour
 	public static SpawnManager Instance;
 
 	[SerializeField]
-	private GameObject[] spawnableObjs;
+	private GameObject[]	spawnableObjs;
 	[SerializeField]
-	private string[] tags;
-	private GameObject spawnedObj;
-	[SerializeField]
-	private bool canSpawn = false;
+	private string[]		tags;
+	private GameObject		spawnedObj;
 
-	public Renderer spawnedObjMat;
+	public bool				canSpawn = false;
+	public Renderer			spawnedObjMat;
+	public float			objLife = 10.0f;
 
 	void Start ()
 	{
@@ -48,11 +48,12 @@ public class SpawnManager : MonoBehaviour
 		spawnedObjMat = spawnedObj.GetComponent<Renderer>();
 		RandomObjColor();
 
-		int randomTagIndex = Random.Range(0, tags.Length);
-		spawnedObj.tag = tags[randomTagIndex];
-		Debug.Log(tags[randomTagIndex]);
+		//int randomTagIndex = Random.Range(0, tags.Length);
+		//spawnedObj.tag = tags[randomTagIndex];
+		//Debug.Log(tags[randomTagIndex]);
 
 		SwipeManager.Instance.spawnedObj = spawnedObj;
+		StartCoroutine(ObjLifeReduction());
 	}
 
 	public void RandomObjColor()
@@ -66,5 +67,21 @@ public class SpawnManager : MonoBehaviour
 		{
 			spawnedObjMat.material.color = Color.green;
 		}
+	}
+
+	IEnumerator ObjLifeReduction()
+	{
+		float time = objLife;
+		while(time > 0)
+		{
+			time -= Time.deltaTime;
+			yield return new WaitForEndOfFrame();
+		}
+
+		Destroy(spawnedObj);
+		SwipeManager.Instance.spawnedObj = null;
+		GameplayManager.Instance.ResetScore();
+
+		StopCoroutine("ObjLifeReduction");
 	}
 }

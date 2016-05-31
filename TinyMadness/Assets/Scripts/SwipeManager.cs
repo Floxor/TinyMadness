@@ -6,18 +6,18 @@ public class SwipeManager : MonoBehaviour
 {
 	public static SwipeManager Instance;
 
-	public GameObject spawnedObj;
-	public float speed = 10.0f;
+	public GameObject	spawnedObj;
+	public float		speed = 10.0f;
 
-	private bool couldBeSwipe;
-	private Vector2 startPos;
-	private float startTime;
+	private bool		couldBeSwipe;
+	private Vector2		startPos;
+	private float		startTime;
 	[SerializeField]
-	private float comfortZone = 10.0f;
+	private float		comfortZone = 10.0f;
 	[SerializeField]
-	private float maxSwipeTime = 1.0f;
+	private float		maxSwipeTime = 1.0f;
 	[SerializeField]
-	private float minSwipeDist = 44.0f;
+	private float		minSwipeDist = 44.0f;
 
 	void Start ()
 	{
@@ -118,10 +118,10 @@ public class SwipeManager : MonoBehaviour
 
 	public void MoveTo(int _shapeId)
 	{
-		if(gameObject.GetComponent<GameplayManager>().enabled)
+		//if(gameObject.GetComponent<GameplayManager>().enabled)
 			StartCoroutine(MoveInGameplayCoroutine(_shapeId));
-		else if (gameObject.GetComponent<MenuManager>().enabled)
-			StartCoroutine(MoveInMenuCoroutine(_shapeId));
+		//else if (gameObject.GetComponent<MenuManager>().enabled)
+		//	StartCoroutine(MoveInMenuCoroutine(_shapeId));
 	}
 
 	public IEnumerator MoveInGameplayCoroutine(int __shapeId)
@@ -134,41 +134,44 @@ public class SwipeManager : MonoBehaviour
 
 		if (spawnedObj.transform.tag == GameplayManager.Instance.shapes[__shapeId].transform.tag && SpawnManager.Instance.spawnedObjMat.material.color == Color.green)
 		{
-			GameplayManager.Instance.Scoring();
+			GameplayManager.Instance.AddScore();
 		}
 		else if (spawnedObj.transform.tag != GameplayManager.Instance.shapes[__shapeId].transform.tag && SpawnManager.Instance.spawnedObjMat.material.color == Color.red)
 		{
-			GameplayManager.Instance.Scoring();
+			GameplayManager.Instance.AddScore();
 		}
 		else
 		{
-			GameplayManager.Instance.ResetScoring();
+			GameplayManager.Instance.ResetScore();
 		}
 		Destroy(spawnedObj);
 		StopCoroutine("MoveInGameplayCoroutine");
 	}
 
-	public IEnumerator MoveInMenuCoroutine(int __optionId)
-	{
-		while (spawnedObj.transform.position != GameplayManager.Instance.shapes[__optionId].transform.position)
-		{
-			spawnedObj.transform.position = Vector2.MoveTowards(spawnedObj.transform.position, GameplayManager.Instance.shapes[__optionId].transform.position, speed * Time.deltaTime);
-			yield return new WaitForEndOfFrame();
-		}
+	//public IEnumerator MoveInMenuCoroutine(int __optionId)
+	//{
+	//	while (spawnedObj.transform.position != GameplayManager.Instance.shapes[__optionId].transform.position)
+	//	{
+	//		spawnedObj.transform.position = Vector2.MoveTowards(spawnedObj.transform.position, GameplayManager.Instance.shapes[__optionId].transform.position, speed * Time.deltaTime);
+	//		yield return new WaitForEndOfFrame();
+	//	}
 
-		if (spawnedObj.transform.tag == GameplayManager.Instance.shapes[__optionId].transform.tag && SpawnManager.Instance.spawnedObjMat.material.color == Color.green)
-		{
-			GameplayManager.Instance.Scoring();
-		}
-		else if (spawnedObj.transform.tag != GameplayManager.Instance.shapes[__optionId].transform.tag && SpawnManager.Instance.spawnedObjMat.material.color == Color.red)
-		{
-			GameplayManager.Instance.Scoring();
-		}
-		else
-		{
-			GameplayManager.Instance.ResetScoring();
-		}
-		Destroy(spawnedObj);
-		StopCoroutine("MoveInMenuCoroutine");
-	}
+	//	if (spawnedObj.transform.tag == GameplayManager.Instance.shapes[__optionId].transform.tag && SpawnManager.Instance.spawnedObjMat.material.color == Color.green)
+	//	{
+	//		GameplayManager.Instance.AddScore();
+	//	}
+	//	else if (spawnedObj.transform.tag != GameplayManager.Instance.shapes[__optionId].transform.tag && SpawnManager.Instance.spawnedObjMat.material.color == Color.red)
+	//	{
+	//		GameplayManager.Instance.AddScore();
+	//	}
+	//	else
+	//	{
+	//		if(GameplayManager.Instance.timeAttackGame)
+	//			GameplayManager.Instance.ResetScore();
+	//		else if(GameplayManager.Instance.survivalGame)
+	//			GameplayManager.Instance.GameOver();
+	//	}
+	//	Destroy(spawnedObj);
+	//	StopCoroutine("MoveInMenuCoroutine");
+	//}
 }
