@@ -7,6 +7,7 @@ public class MenuManager : MonoBehaviour
 	private static MenuManager _instance;
 	private bool _alreadyInstantiated;
 
+	public GameObject countDownObject;
 	public GameObject activeMenuPanel;
 	public GameObject[] menuPanels;
 
@@ -47,6 +48,30 @@ public class MenuManager : MonoBehaviour
 	}
 
 	void Update() { }
+
+	public void ZoomInObject(GameObject Obj, float time)
+	{
+		StartCoroutine(zoomInCoroutine(Obj, time));
+	}
+
+	IEnumerator zoomInCoroutine(GameObject Obj, float time)
+	{
+		float eT = 0;
+		Vector3 targetScale;
+		Obj.SetActive(true);
+		targetScale = Obj.transform.localScale;
+		Obj.transform.localScale = Vector3.zero;
+
+		if (Obj.GetComponent<Text>() != null)
+			Obj.GetComponent<Text>().CrossFadeAlpha(0, time * 1.3f, true);
+		
+		while (eT < time)
+		{
+			eT += Time.deltaTime;
+			Obj.transform.localScale = Vector3.Lerp(Vector3.zero, targetScale, eT / time);
+			yield return null;
+		}
+	}
 
 	public void bringInPanel(GameObject newMenuPanel)
 	{
