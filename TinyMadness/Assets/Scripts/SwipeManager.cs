@@ -7,6 +7,7 @@ public class SwipeManager : MonoBehaviour
 	public static SwipeManager Instance;
 
 	public GameObject spawnedObj;
+	public float speed = 10.0f;
 
 	private bool couldBeSwipe;
 	private Vector2 startPos;
@@ -17,8 +18,6 @@ public class SwipeManager : MonoBehaviour
 	private float maxSwipeTime = 1.0f;
 	[SerializeField]
 	private float minSwipeDist = 44.0f;
-	[SerializeField]
-	private float speed = 10.0f;
 
 	void Start ()
 	{
@@ -119,7 +118,10 @@ public class SwipeManager : MonoBehaviour
 
 	public void MoveTo(int _shapeId)
 	{
-		StartCoroutine(MoveInGameplayCoroutine(_shapeId));
+		if(gameObject.GetComponent<GameplayManager>().enabled)
+			StartCoroutine(MoveInGameplayCoroutine(_shapeId));
+		else if (gameObject.GetComponent<MenuManager>().enabled)
+			StartCoroutine(MoveInMenuCoroutine(_shapeId));
 	}
 
 	public IEnumerator MoveInGameplayCoroutine(int __shapeId)
@@ -129,6 +131,7 @@ public class SwipeManager : MonoBehaviour
 			spawnedObj.transform.position = Vector2.MoveTowards(spawnedObj.transform.position, GameplayManager.Instance.shapes[__shapeId].transform.position, speed * Time.deltaTime);
 			yield return new WaitForEndOfFrame();
 		}
+
 		if (spawnedObj.transform.tag == GameplayManager.Instance.shapes[__shapeId].transform.tag && SpawnManager.Instance.spawnedObjMat.material.color == Color.green)
 		{
 			GameplayManager.Instance.Scoring();
@@ -142,21 +145,22 @@ public class SwipeManager : MonoBehaviour
 			GameplayManager.Instance.ResetScoring();
 		}
 		Destroy(spawnedObj);
-		StopCoroutine("MoveToCoroutine");
+		StopCoroutine("MoveInGameplayCoroutine");
 	}
 
-	public IEnumerator MoveInMenuCoroutine(int __shapeId)
+	public IEnumerator MoveInMenuCoroutine(int __optionId)
 	{
-		while (spawnedObj.transform.position != GameplayManager.Instance.shapes[__shapeId].transform.position)
+		while (spawnedObj.transform.position != GameplayManager.Instance.shapes[__optionId].transform.position)
 		{
-			spawnedObj.transform.position = Vector2.MoveTowards(spawnedObj.transform.position, GameplayManager.Instance.shapes[__shapeId].transform.position, speed * Time.deltaTime);
+			spawnedObj.transform.position = Vector2.MoveTowards(spawnedObj.transform.position, GameplayManager.Instance.shapes[__optionId].transform.position, speed * Time.deltaTime);
 			yield return new WaitForEndOfFrame();
 		}
-		if (spawnedObj.transform.tag == GameplayManager.Instance.shapes[__shapeId].transform.tag && SpawnManager.Instance.spawnedObjMat.material.color == Color.green)
+
+		if (spawnedObj.transform.tag == GameplayManager.Instance.shapes[__optionId].transform.tag && SpawnManager.Instance.spawnedObjMat.material.color == Color.green)
 		{
 			GameplayManager.Instance.Scoring();
 		}
-		else if (spawnedObj.transform.tag != GameplayManager.Instance.shapes[__shapeId].transform.tag && SpawnManager.Instance.spawnedObjMat.material.color == Color.red)
+		else if (spawnedObj.transform.tag != GameplayManager.Instance.shapes[__optionId].transform.tag && SpawnManager.Instance.spawnedObjMat.material.color == Color.red)
 		{
 			GameplayManager.Instance.Scoring();
 		}
@@ -165,6 +169,6 @@ public class SwipeManager : MonoBehaviour
 			GameplayManager.Instance.ResetScoring();
 		}
 		Destroy(spawnedObj);
-		StopCoroutine("MoveToCoroutine");
+		StopCoroutine("MoveInMenuCoroutine");
 	}
 }
