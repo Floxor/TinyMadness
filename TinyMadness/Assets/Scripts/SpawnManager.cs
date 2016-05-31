@@ -7,10 +7,13 @@ public class SpawnManager : MonoBehaviour
 
 	[SerializeField]
 	private GameObject[] spawnableObjs;
+	[SerializeField]
+	private string[] tags;
 	private GameObject spawnedObj;
-	private Renderer spawnedObjMat;
 	[SerializeField]
 	private bool canSpawn = false;
+
+	public Renderer spawnedObjMat;
 
 	void Start ()
 	{
@@ -39,11 +42,15 @@ public class SpawnManager : MonoBehaviour
 	{
 		canSpawn = false;
 
-		int randomIndex = Random.Range(0, spawnableObjs.Length);
-		spawnedObj = GameObject.Instantiate(spawnableObjs[randomIndex].gameObject, spawnableObjs[randomIndex].gameObject.transform.position, Quaternion.identity) as GameObject;
+		int randomObjIndex = Random.Range(0, spawnableObjs.Length);
+		spawnedObj = GameObject.Instantiate(spawnableObjs[randomObjIndex].gameObject, spawnableObjs[randomObjIndex].gameObject.transform.position, Quaternion.identity) as GameObject;
 		
 		spawnedObjMat = spawnedObj.GetComponent<Renderer>();
 		RandomObjColor();
+
+		int randomTagIndex = Random.Range(0, tags.Length);
+		spawnedObj.tag = tags[randomTagIndex];
+		Debug.Log(tags[randomTagIndex]);
 
 		SwipeManager.Instance.spawnedObj = spawnedObj;
 	}

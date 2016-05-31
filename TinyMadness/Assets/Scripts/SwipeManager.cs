@@ -12,11 +12,13 @@ public class SwipeManager : MonoBehaviour
 	private Vector2 startPos;
 	private float startTime;
 	[SerializeField]
-	private float comfortZone = 10;
+	private float comfortZone = 10.0f;
 	[SerializeField]
-	private float maxSwipeTime = 1;
+	private float maxSwipeTime = 1.0f;
 	[SerializeField]
-	private float minSwipeDist = 44;
+	private float minSwipeDist = 44.0f;
+	[SerializeField]
+	private float speed = 10.0f;
 
 	void Start ()
 	{
@@ -42,27 +44,24 @@ public class SwipeManager : MonoBehaviour
 			Vector2 directionSwipe = (Vector2)Input.mousePosition - startPos;
 			float swipeAngle = Vector2.Angle(Vector3.right, directionSwipe);
 
-			if(swipeAngle < 45)
+			if(swipeTime < maxSwipeTime)
 			{
-				spawnedObj.GetComponent<Renderer>().material.color = Color.yellow;
-				//spawnedObj.transform.position = Vector2.MoveTowards(spawnedObj.transform.position, new Vector2(spawnedObj.transform.position.x + 100, spawnedObj.transform.position.y), 2.0f * Time.deltaTime);
-				//Destroy(spawnedObj);
+				if (swipeAngle < 45)
+				{
+					//spawnedObj.GetComponent<Renderer>().material.color = Color.yellow;
+					MoveTo(2);
+				}
+				else if (swipeAngle > 45 && swipeAngle < 135 && (Mathf.Sign(Input.mousePosition.y - startPos.y) == 1))
+				{
+					//spawnedObj.GetComponent<Renderer>().material.color = Color.blue;
+					MoveTo(1);
+				}
+				else if (swipeAngle > 135)
+				{
+					//spawnedObj.GetComponent<Renderer>().material.color = Color.black;
+					MoveTo(0);
+				}
 			}
-			else if(swipeAngle > 45 && swipeAngle < 135)
-			{
-				spawnedObj.GetComponent<Renderer>().material.color = Color.blue;
-				//Destroy(spawnedObj);
-			}
-			else if(swipeAngle > 135)
-			{
-				spawnedObj.GetComponent<Renderer>().material.color = Color.black;
-				//Destroy(spawnedObj);
-			}
-			else
-			{
-				Debug.Log("Down");
-			}
-			
 		}
 	#endif
 	#if UNITY_ANDROID
@@ -79,7 +78,7 @@ public class SwipeManager : MonoBehaviour
 					break;
 
 				case TouchPhase.Moved:
-					if (Mathf.Abs(touch.position.y - startPos.y) > comfortZone)
+					if (Vector2.Angle(Vector3.right, (Vector2)Input.mousePosition - startPos) > comfortZone)
 					{
 						couldBeSwipe = false;
 					}
@@ -92,20 +91,25 @@ public class SwipeManager : MonoBehaviour
 				case TouchPhase.Ended:
 					float swipeTime = Time.time - startTime;
 					Vector2 directionSwipe = (Vector2)Input.mousePosition - startPos;
-
 					float swipeAngle = Vector2.Angle(Vector3.right, directionSwipe);
 
-					if(swipeAngle < 45)
+					if(swipeTime < maxSwipeTime)
 					{
-						spawnedObj.GetComponent<Renderer>().material.color = Color.green;
-					}
-					else if(swipeAngle > 135)
-					{
-						spawnedObj.GetComponent<Renderer>().material.color = Color.red;
-					}
-					else
-					{
-						spawnedObj.GetComponent<Renderer>().material.color = Color.blue;
+						if (swipeAngle < 45)
+						{
+							spawnedObj.GetComponent<Renderer>().material.color = Color.yellow;
+							MoveTo(2);
+						}
+						else if (swipeAngle > 45 && swipeAngle < 135 && (Mathf.Sign(Input.mousePosition.y - startPos.y) == 1))
+						{
+							spawnedObj.GetComponent<Renderer>().material.color = Color.blue;
+							MoveTo(1);
+						}
+						else if (swipeAngle > 135)
+						{
+							spawnedObj.GetComponent<Renderer>().material.color = Color.black;
+							MoveTo(0);
+						}
 					}
 					break;
 			}
@@ -113,28 +117,54 @@ public class SwipeManager : MonoBehaviour
 #endif
 	}
 
-	public void SwipeState(float _dirX, float _dirY)
+	public void MoveTo(int _shapeId)
 	{
-		List<float> vector = new List<float>();
-		vector.Add(_dirX);
-		vector.Add(_dirY);
-		//vector.Sort();
+		StartCoroutine(MoveInGameplayCoroutine(_shapeId));
+	}
 
-		string leftAndRight = vector[0] + "," + vector[1];
-		Debug.Log(vector[0] + "X et Y" + vector[1]);
-		Debug.Log("Vector : "+leftAndRight);
-
-		switch(leftAndRight)
+	public IEnumerator MoveInGameplayCoroutine(int __shapeId)
+	{
+		while(spawnedObj.transform.position != GameplayManager.Instance.shapes[__shapeId].transform.position)
 		{
-			case "1,0" :
-				spawnedObj.GetComponent<Renderer>().material.color = Color.red;
-				break;
-			case "0,1":
-				spawnedObj.GetComponent<Renderer>().material.color = Color.blue;
-				break;
-			case "-1,0":
-				spawnedObj.GetComponent<Renderer>().material.color = Color.green;
-				break;
+			spawnedObj.transform.position = Vector2.MoveTowards(spawnedObj.transform.position, GameplayManager.Instance.shapes[__shapeId].transform.position, speed * Time.deltaTime);
+			yield return new WaitForEndOfFrame();
 		}
+		if (spawnedObj.transform.tag == GameplayManager.Instance.shapes[__shapeId].transform.tag && SpawnManager.Instance.spawnedObjMat.material.color == Color.green)
+		{
+			GameplayManager.Instance.Scoring();
+		}
+		else if (spawnedObj.transform.tag != GameplayManager.Instance.shapes[__shapeId].transform.tag && SpawnManager.Instance.spawnedObjMat.material.color == Color.red)
+		{
+			GameplayManager.Instance.Scoring();
+		}
+		else
+		{
+			GameplayManager.Instance.ResetScoring();
+		}
+		Destroy(spawnedObj);
+		StopCoroutine("MoveToCoroutine");
+	}
+
+	public IEnumerator MoveInMenuCoroutine(int __shapeId)
+	{
+		while (spawnedObj.transform.position != GameplayManager.Instance.shapes[__shapeId].transform.position)
+		{
+			spawnedObj.transform.position = Vector2.MoveTowards(spawnedObj.transform.position, GameplayManager.Instance.shapes[__shapeId].transform.position, speed * Time.deltaTime);
+			yield return new WaitForEndOfFrame();
+		}
+		if (spawnedObj.transform.tag == GameplayManager.Instance.shapes[__shapeId].transform.tag && SpawnManager.Instance.spawnedObjMat.material.color == Color.green)
+		{
+			GameplayManager.Instance.Scoring();
+		}
+		else if (spawnedObj.transform.tag != GameplayManager.Instance.shapes[__shapeId].transform.tag && SpawnManager.Instance.spawnedObjMat.material.color == Color.red)
+		{
+			GameplayManager.Instance.Scoring();
+		}
+		else
+		{
+			GameplayManager.Instance.ResetScoring();
+		}
+		Destroy(spawnedObj);
+		StopCoroutine("MoveToCoroutine");
 	}
 }
