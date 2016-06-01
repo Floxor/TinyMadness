@@ -150,7 +150,7 @@ public class MenuManager : MonoBehaviour
 
 	public void BringInUIShapes()
 	{
-		switchToPanel(menuPanels[2]);
+		SwitchToPanel(menuPanels[2]);
 	}
 
 	public static MenuManager GetInstance()
