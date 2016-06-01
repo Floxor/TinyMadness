@@ -88,7 +88,7 @@ public class GameplayManager : MonoBehaviour
 			SpawnManager.Instance.spawnedObj.GetComponent<Shape>().Kill();
 
 
-		MenuManager.GetInstance().bringInPanel(MenuManager.GetInstance().activeMenuPanel);
+		MenuManager.GetInstance().BringInGameOver();
 
 		//Go Menu window Ou Game Over window 
 	}

@@ -66,7 +66,10 @@ public class MenuManager : MonoBehaviour
 		Obj.transform.localScale = Vector3.zero;
 
 		if (Obj.GetComponent<Text>() != null)
+		{
+			Obj.GetComponent<Text>().CrossFadeAlpha(1, 0, true);
 			Obj.GetComponent<Text>().CrossFadeAlpha(0, time * 1.3f, true);
+		}
 		
 		while (eT < time)
 		{
@@ -83,15 +86,28 @@ public class MenuManager : MonoBehaviour
 		for (int i = 0; i < menuElements.Length; ++i)
 		{
 			menuElements[i].playInAnim();
-			if (menuElements[i].GetComponent<Button>() != null)
-				menuElements[i].GetComponent<Button>().interactable = true;
+
+			Vector3 directionToElement = menuElements[i].transform.position - transform.position;
+			float angle = Vector2.Angle(Vector3.right, directionToElement);
+			
+			if (angle < 45)
+				swipeCallbacks[2] = menuElements[i];
+			else if (angle > 135)
+				swipeCallbacks[0] = menuElements[i];
+			else if (directionToElement.y > 0)
+				swipeCallbacks[1] = menuElements[i];
+			else
+				swipeCallbacks[3] = menuElements[i];
 		}
 		userIsInMenu = true;
 		activeMenuPanel = newMenuPanel;
 	}
 
 	public void bringOutPanel(GameObject oldMenuPanel)
-	{ 
+	{
+		if (oldMenuPanel == null)
+			return;
+
 		MenuElement[] menuElements = oldMenuPanel.GetComponentsInChildren<MenuElement>();
 
 		for (int i = 0; i < menuElements.Length; ++i)
@@ -101,6 +117,7 @@ public class MenuManager : MonoBehaviour
 				menuElements[i].GetComponent<Button>().interactable = false;
 		}
 		userIsInMenu = false;
+		activeMenuPanel = null;
 	}
 
 
@@ -119,6 +136,16 @@ public class MenuManager : MonoBehaviour
 	{
 		bringOutPanel(activeMenuPanel);
 		bringInPanel(newMenuPanel);
+	}
+
+	public void BringInGameOver()
+	{
+		switchToPanel(menuPanels[1]);
+	}
+
+	public void GotoMainMenu()
+	{
+		switchToPanel(menuPanels[0]);
 	}
 
 	public static MenuManager GetInstance()

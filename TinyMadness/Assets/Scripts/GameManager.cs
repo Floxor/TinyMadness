@@ -30,16 +30,6 @@ public class GameManager : MonoBehaviour
 
 	}
 
-	public void GotoMainMenu()
-	{
-		Debug.Log("Going back to mainMenu");
-	}
-
-	public void LaunchGameOver()
-	{
-		Debug.Log("GAME LOST !");
-	}
-
 	public void StartCountDown()
 	{
 		StartCoroutine(CountDown());
