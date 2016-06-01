@@ -10,13 +10,14 @@ public class SwipeManager : MonoBehaviour
 	public Shape			spawnedObj;
 	public float			swipeSpeed = 10.0f;
 	public bool				couldBeSwipe;
+	public bool				canSwipe = true;
 
 	public OnSwipeDelegate	OnSwipe;
 
 	private Vector2			startPos;
 	private float			startTime;
-	[SerializeField]
-	private float			comfortZone = 10.0f;
+	//[SerializeField]
+	//private float			comfortZone = 10.0f;
 	[SerializeField]
 	private float			maxSwipeTime = 1.0f;
 	[SerializeField]
@@ -50,7 +51,7 @@ public class SwipeManager : MonoBehaviour
 			Vector2 directionSwipe = (Vector2)Input.mousePosition - startPos;
 			float swipeAngle = Vector2.Angle(Vector3.right, directionSwipe);
 
-			if(swipeTime < maxSwipeTime)
+			if(swipeTime < maxSwipeTime && canSwipe)
 			{
 				if (swipeAngle < 45)
 				{
@@ -63,6 +64,10 @@ public class SwipeManager : MonoBehaviour
 				else if (swipeAngle > 135)
 				{
 					OnSwipe(0);
+				}
+				else if (swipeAngle > 45 && swipeAngle < 135 && (Mathf.Sign(Input.mousePosition.y - startPos.y) == -1))
+				{
+					OnSwipe(3);
 				}
 			}
 		}
@@ -80,13 +85,13 @@ public class SwipeManager : MonoBehaviour
 					startTime = Time.time;
 					break;
 
-				case TouchPhase.Moved:
-					if (Vector2.Angle(Vector3.right, (Vector2)Input.mousePosition - startPos) > comfortZone)
-					{
-						couldBeSwipe = false;
-						Camera.main.backgroundColor = Color.red;
-					}
-					break;
+				//case TouchPhase.Moved:
+				//	if (Vector2.Angle(Vector3.right, (Vector2)Input.mousePosition - startPos) > comfortZone)
+				//	{
+				//		couldBeSwipe = false;
+				//		Camera.main.backgroundColor = Color.red;
+				//	}
+				//	break;
 
 				case TouchPhase.Stationary:
 					couldBeSwipe = false;
@@ -97,7 +102,7 @@ public class SwipeManager : MonoBehaviour
 					Vector2 directionSwipe = (Vector2)Input.mousePosition - startPos;
 					float swipeAngle = Vector2.Angle(Vector3.right, directionSwipe);
 
-					if (swipeTime < maxSwipeTime)
+					if (swipeTime < maxSwipeTime && canSwipe)
 					{
 						if (swipeAngle < 45)
 						{
@@ -111,8 +116,10 @@ public class SwipeManager : MonoBehaviour
 						{
 							OnSwipe(0);
 						}
-
-						couldBeSwipe = false;
+						else if (swipeAngle > 45 && swipeAngle < 135 && (Mathf.Sign(Input.mousePosition.y - startPos.y) == -1))
+						{
+							OnSwipe(3);
+						}
 					}
 					break;
 			}
@@ -122,33 +129,42 @@ public class SwipeManager : MonoBehaviour
 
 	public void MoveTo(int _shapeId)
 	{
-		couldBeSwipe = false;
+		if(_shapeId != 3)
+		{
+			couldBeSwipe = false;
 
-		if (GameplayManager.Instance.timeAttackGame || GameplayManager.Instance.survivalGame)
-			StartCoroutine(MoveInGameplayCoroutine(_shapeId));
+			if (GameplayManager.Instance.timeAttackGame || GameplayManager.Instance.survivalGame)
+				StartCoroutine(MoveInGameplayCoroutine(_shapeId));
+		}
 	}
 
 	public IEnumerator MoveInGameplayCoroutine(int __shapeId)
 	{
-		while (spawnedObj.transform.position != GameplayManager.Instance.shapes[__shapeId].transform.position)
+		if(canSwipe)
 		{
-			spawnedObj.transform.position = Vector2.MoveTowards(spawnedObj.transform.position, GameplayManager.Instance.shapes[__shapeId].transform.position, swipeSpeed * Time.deltaTime);
-			yield return new WaitForEndOfFrame();
-		}
+			canSwipe = false;
 
-		if (spawnedObj.transform.tag == GameplayManager.Instance.shapes[__shapeId].transform.tag && spawnedObj.myRend.material.color == Color.green)
-		{
-			GameplayManager.Instance.AddScore();
+			while (spawnedObj.transform.position != GameplayManager.Instance.shapes[__shapeId].transform.position)
+			{
+				spawnedObj.transform.position = Vector2.MoveTowards(spawnedObj.transform.position, GameplayManager.Instance.shapes[__shapeId].transform.position, swipeSpeed * Time.deltaTime);
+				yield return new WaitForEndOfFrame();
+			}
+
+			if (spawnedObj.transform.tag == GameplayManager.Instance.shapes[__shapeId].transform.tag && spawnedObj.myRend.material.color == Color.green)
+			{
+				GameplayManager.Instance.AddScore();
+			}
+			else if (spawnedObj.transform.tag != GameplayManager.Instance.shapes[__shapeId].transform.tag && spawnedObj.myRend.material.color == Color.red)
+			{
+				GameplayManager.Instance.AddScore();
+			}
+			else
+			{
+				GameplayManager.Instance.FailedSwipeOrEndObjLife();
+			}
+			canSwipe = true;
+			StartCoroutine(SpawnManager.Instance.CanSpawnCoroutine());
+			StopCoroutine("MoveInGameplayCoroutine");
 		}
-		else if (spawnedObj.transform.tag != GameplayManager.Instance.shapes[__shapeId].transform.tag && spawnedObj.myRend.material.color == Color.red)
-		{
-			GameplayManager.Instance.AddScore();
-		}
-		else
-		{
-			GameplayManager.Instance.FailedSwipeOrEndObjLife();
-		}
-		StartCoroutine(SpawnManager.Instance.CanSpawnCoroutine());
-		StopCoroutine("MoveInGameplayCoroutine");
 	}
 }
