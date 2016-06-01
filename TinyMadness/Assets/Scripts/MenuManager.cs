@@ -132,7 +132,7 @@ public class MenuManager : MonoBehaviour
 		//Debug.Log("user has swiped: " + swipeDirection);
 	}
 
-	public void switchToPanel(GameObject newMenuPanel)
+	public void SwitchToPanel(GameObject newMenuPanel)
 	{
 		bringOutPanel(activeMenuPanel);
 		bringInPanel(newMenuPanel);
@@ -140,12 +140,12 @@ public class MenuManager : MonoBehaviour
 
 	public void BringInGameOver()
 	{
-		switchToPanel(menuPanels[1]);
+		SwitchToPanel(menuPanels[1]);
 	}
 
 	public void GotoMainMenu()
 	{
-		switchToPanel(menuPanels[0]);
+		SwitchToPanel(menuPanels[0]);
 	}
 
 	public static MenuManager GetInstance()

@@ -67,6 +67,19 @@ public class GameManager : MonoBehaviour
 		StartCoroutine(CountDown(GameplayManager.Instance.GoSurvivalGame));
 	}
 
+	public void Replay()
+	{
+		if (GameplayManager.Instance.previousGameMode == GameplayManager.GameMode.TimeAttack)
+		{
+			StartTimeAttackGame();
+		}
+
+		if (GameplayManager.Instance.previousGameMode == GameplayManager.GameMode.Survival)
+		{
+			StartSurvivalGame();
+		}
+	}
+
 	public static GameManager GetInstance()
 	{
 		return _instance;
