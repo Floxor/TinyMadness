@@ -40,16 +40,11 @@ public class GameManager : MonoBehaviour
 	IEnumerator CountDown(Action callBack = null)
 	{
 		yield return new WaitForSeconds(0.5f);
-		MenuManager.GetInstance().ZoomInObject(MenuManager.GetInstance().countDownObject.transform.GetChild(0).gameObject, 0.5f);
-		
-		yield return new WaitForSeconds(0.5f);
-		MenuManager.GetInstance().ZoomInObject(MenuManager.GetInstance().countDownObject.transform.GetChild(1).gameObject, 0.5f);
-		
-		yield return new WaitForSeconds(0.5f);
-		MenuManager.GetInstance().ZoomInObject(MenuManager.GetInstance().countDownObject.transform.GetChild(2).gameObject, 0.5f);
-		
-		yield return new WaitForSeconds(0.5f);
-		MenuManager.GetInstance().ZoomInObject(MenuManager.GetInstance().countDownObject.transform.GetChild(3).gameObject, 0.5f);
+		for (int i = 0; i <= 3; i++)
+		{
+			MenuManager.GetInstance().ZoomInObject(MenuManager.GetInstance().countDownObject.transform.GetChild(i).gameObject, 0.5f);
+			yield return new WaitForSeconds(0.5f);
+		}
 
 		if(callBack != null)
 			callBack();
