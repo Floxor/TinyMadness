@@ -68,7 +68,7 @@ public class GameplayManager : MonoBehaviour
 			scoreText.text = highScore.ToString();
 		}
 
-		MenuManager.GetInstance().bringInPanel(MenuManager.GetInstance().menuPanels[1]); // c'est laid mais osef
+		MenuManager.GetInstance().BringInGameOver();
 
 		//Go Menu window Ou Game Over window 
 	}

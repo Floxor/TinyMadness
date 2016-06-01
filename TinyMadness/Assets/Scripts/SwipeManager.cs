@@ -46,7 +46,6 @@ public class SwipeManager : MonoBehaviour
 		if (Input.GetMouseButtonUp(0))
 		{
 			//Debug.Log(" SwipeEndPosDir x :" + Input.mousePosition.x + " EndPos y :" + Input.mousePosition.y + " SwipeTime :" + swipeTime);
-
 			float swipeTime = Time.time - startTime;
 			Vector2 directionSwipe = (Vector2)Input.mousePosition - startPos;
 			float swipeAngle = Vector2.Angle(Vector3.right, directionSwipe);
