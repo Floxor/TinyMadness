@@ -57,6 +57,7 @@ public class SpawnManager : MonoBehaviour
 		{
 			spawnedObj.GetComponent<Shape>().Kill();
 			canSpawn = true;
+			SwipeManager.Instance.canSwipe = true;
 		}
 
 		StopCoroutine("CanSpawnCoroutine");

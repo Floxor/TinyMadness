@@ -51,7 +51,7 @@ public class SwipeManager : MonoBehaviour
 			Vector2 directionSwipe = (Vector2)Input.mousePosition - startPos;
 			float swipeAngle = Vector2.Angle(Vector3.right, directionSwipe);
 
-			if(swipeTime < maxSwipeTime && canSwipe)
+			if(swipeTime < maxSwipeTime)
 			{
 				if (swipeAngle < 45)
 				{
@@ -67,7 +67,8 @@ public class SwipeManager : MonoBehaviour
 				}
 				else if (swipeAngle > 45 && swipeAngle < 135 && (Mathf.Sign(Input.mousePosition.y - startPos.y) == -1))
 				{
-					OnSwipe(3);
+					if (!GameplayManager.Instance.timeAttackGame && !GameplayManager.Instance.survivalGame)
+						OnSwipe(3);
 				}
 			}
 		}
@@ -102,7 +103,7 @@ public class SwipeManager : MonoBehaviour
 					Vector2 directionSwipe = (Vector2)Input.mousePosition - startPos;
 					float swipeAngle = Vector2.Angle(Vector3.right, directionSwipe);
 
-					if (swipeTime < maxSwipeTime && canSwipe)
+					if (swipeTime < maxSwipeTime)
 					{
 						if (swipeAngle < 45)
 						{
@@ -118,7 +119,8 @@ public class SwipeManager : MonoBehaviour
 						}
 						else if (swipeAngle > 45 && swipeAngle < 135 && (Mathf.Sign(Input.mousePosition.y - startPos.y) == -1))
 						{
-							OnSwipe(3);
+							if (!GameplayManager.Instance.timeAttackGame && !GameplayManager.Instance.survivalGame)
+								OnSwipe(3);
 						}
 					}
 					break;
@@ -129,13 +131,10 @@ public class SwipeManager : MonoBehaviour
 
 	public void MoveTo(int _shapeId)
 	{
-		if(_shapeId != 3)
-		{
-			couldBeSwipe = false;
+		couldBeSwipe = false;
 
-			if (GameplayManager.Instance.timeAttackGame || GameplayManager.Instance.survivalGame)
-				StartCoroutine(MoveInGameplayCoroutine(_shapeId));
-		}
+		if (GameplayManager.Instance.timeAttackGame || GameplayManager.Instance.survivalGame)
+			StartCoroutine(MoveInGameplayCoroutine(_shapeId));
 	}
 
 	public IEnumerator MoveInGameplayCoroutine(int __shapeId)
@@ -162,7 +161,6 @@ public class SwipeManager : MonoBehaviour
 			{
 				GameplayManager.Instance.FailedSwipeOrEndObjLife();
 			}
-			canSwipe = true;
 			StartCoroutine(SpawnManager.Instance.CanSpawnCoroutine());
 			StopCoroutine("MoveInGameplayCoroutine");
 		}

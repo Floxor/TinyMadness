@@ -62,6 +62,7 @@ public class GameplayManager : MonoBehaviour
 		previousGameMode = GameMode.Null;
 		scoreText.text = actualScore.ToString();
 		SpawnManager.Instance.canSpawn = true;
+		SwipeManager.Instance.canSwipe = true;
 	}
 
 	public void FailedSwipeOrEndObjLife()
