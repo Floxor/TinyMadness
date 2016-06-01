@@ -13,8 +13,7 @@ public class MenuManager : MonoBehaviour
 
 	public MenuElement[] swipeCallbacks;
 
-	[HideInInspector]
-	public bool userIsInMenu = true;
+	private bool quitIsUp = false;
 
 	void Awake()
 	{
@@ -33,7 +32,6 @@ public class MenuManager : MonoBehaviour
 		}
 
 		StartCoroutine(delayedStart());
-
 	}
 
 	IEnumerator delayedStart()
@@ -96,11 +94,9 @@ public class MenuManager : MonoBehaviour
 				swipeCallbacks[0] = menuElements[i];
 			else if (directionToElement.y > 0)
 				swipeCallbacks[1] = menuElements[i];
-			else
-				swipeCallbacks[3] = menuElements[i];
+			//else
+			//	swipeCallbacks[3] = menuElements[i];
 		}
-		userIsInMenu = true;
-		activeMenuPanel = newMenuPanel;
 	}
 
 	public void bringOutPanel(GameObject oldMenuPanel)
@@ -113,29 +109,38 @@ public class MenuManager : MonoBehaviour
 		for (int i = 0; i < menuElements.Length; ++i)
 		{
 			menuElements[i].playOutAnim();
-			if (menuElements[i].GetComponent<Button>() != null)
-				menuElements[i].GetComponent<Button>().interactable = false;
 		}
-		userIsInMenu = false;
-		activeMenuPanel = null;
 	}
 
 
 	void OnSwipe(int swipeDirection)
 	{
-		if (!userIsInMenu)
-			return;
+		if (swipeDirection == 3)
+		{
+			if (quitIsUp)
+			{
+				Debug.Log("quit");
+				Application.Quit();
+				return;
+			}
 
-		if (swipeCallbacks[swipeDirection] != null)
+			BringQuitPopup();
+		}
+		else if (swipeCallbacks[swipeDirection] != null)
+		{
+			if (quitIsUp)
+				bringOutPanel(menuPanels[3]);
+		
+			quitIsUp = false;
 			swipeCallbacks[swipeDirection].callback();
-
-		//Debug.Log("user has swiped: " + swipeDirection);
+		}
 	}
 
 	public void SwitchToPanel(GameObject newMenuPanel)
 	{
 		bringOutPanel(activeMenuPanel);
 		bringInPanel(newMenuPanel);
+		activeMenuPanel = newMenuPanel;
 	}
 
 	public void BringInGameOver()
@@ -151,6 +156,12 @@ public class MenuManager : MonoBehaviour
 	public void BringInUIShapes()
 	{
 		SwitchToPanel(menuPanels[2]);
+	}
+
+	public void BringQuitPopup()
+	{
+		quitIsUp = true;
+		bringInPanel(menuPanels[3]);
 	}
 
 	public static MenuManager GetInstance()

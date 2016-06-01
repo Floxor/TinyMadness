@@ -106,10 +106,7 @@ public class GameplayManager : MonoBehaviour
 		if(SpawnManager.Instance.spawnedObj)
 			SpawnManager.Instance.spawnedObj.GetComponent<Shape>().Kill();
 
-
 		MenuManager.GetInstance().BringInGameOver();
-
-		//Go Menu window Ou Game Over window 
 	}
 
 	public void AddScore()
