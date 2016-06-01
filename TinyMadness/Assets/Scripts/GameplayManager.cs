@@ -14,14 +14,14 @@ public class GameplayManager : MonoBehaviour
 	public float		highScore = 0;
 	public bool			survivalGame = false;
 	public bool			timeAttackGame = false;
-	public float		clock = 500.0f;
+	public float		clock = 60.0f;
 	public float		actualClock;
 
 	void Start ()
 	{
 		Instance = this;
-		scoreText.text = actualScore.ToString();
-		clockText.text = actualClock.ToString("0.00");
+		scoreText.text = highScore.ToString();
+		clockText.text = null;
 	}
 
 	void Update()
@@ -31,7 +31,8 @@ public class GameplayManager : MonoBehaviour
 			actualScore = score;
 			scoreText.text = actualScore.ToString();
 		}
-		clockText.text = actualClock.ToString("0.00");
+		if(timeAttackGame)
+			clockText.text = actualClock.ToString("0.00");
 	}
 
 	public void GoTimeAttackGame()
@@ -49,6 +50,7 @@ public class GameplayManager : MonoBehaviour
 
 	public void StartNewGame()
 	{
+		scoreText.text = actualScore.ToString();
 		SpawnManager.Instance.canSpawn = true;
 	}
 
@@ -57,11 +59,13 @@ public class GameplayManager : MonoBehaviour
 		SpawnManager.Instance.canSpawn = false;
 		timeAttackGame = false;
 		survivalGame = false;
+		clockText.text = null;
 		Destroy(SwipeManager.Instance.spawnedObj);
 
 		if(actualScore > highScore)
 		{
 			highScore = actualScore;
+			scoreText.text = highScore.ToString();
 		}
 
 		MenuManager.GetInstance().bringInPanel(MenuManager.GetInstance().activeMenuPanel);
