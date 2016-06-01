@@ -9,82 +9,56 @@ public class SpawnManager : MonoBehaviour
 	private GameObject[]	spawnableObjs;
 	[SerializeField]
 	private string[]		tags;
-	private GameObject		spawnedObj;
+	public GameObject		spawnedObj;
 
 	public bool				canSpawn = false;
-	public Renderer			spawnedObjMat;
-	public float			objLife = 10.0f;
+	public float			savedSpawnDelay = 0.0f;
+	public float			spawnDelay = 10.0f;
 
-	void Start ()
+	void Awake ()
 	{
 		Instance = this;
+		savedSpawnDelay = spawnDelay;
 	}
 	
 	void Update ()
 	{
-		//if(delegate.OnPointMarked)
-		//{
-		//	canSpawn = true;
-		//}
 		if(canSpawn)
 		{
 			SpawnRandomObj();
 		}
-
-		//if(spawnedObj == null)
-		//{
-		//	canSpawn = true;
-		//}
-	
 	}
 
 	public void SpawnRandomObj()
 	{
 		canSpawn = false;
+		if(spawnDelay != savedSpawnDelay)
+		{
+			spawnDelay = savedSpawnDelay;
+		}
 
 		int randomObjIndex = Random.Range(0, spawnableObjs.Length);
 		spawnedObj = GameObject.Instantiate(spawnableObjs[randomObjIndex].gameObject, spawnableObjs[randomObjIndex].gameObject.transform.position, Quaternion.identity) as GameObject;
-		
-		spawnedObjMat = spawnedObj.GetComponent<Renderer>();
-		RandomObjColor();
 
-		//int randomTagIndex = Random.Range(0, tags.Length);
-		//spawnedObj.tag = tags[randomTagIndex];
-		//Debug.Log(tags[randomTagIndex]);
-
-		SwipeManager.Instance.spawnedObj = spawnedObj;
-		//StartCoroutine(ObjLifeReduction());
+		SwipeManager.Instance.spawnedObj = spawnedObj.GetComponent<Shape>();
 	}
 
-	public void RandomObjColor()
+	
+
+	public IEnumerator CanSpawnCoroutine()
 	{
-		int randomInt = Random.Range(0, 2);
-		if(randomInt%2 == 0)
+		while(spawnDelay > 0 && !canSpawn)
 		{
-			spawnedObjMat.material.color = Color.red;
-		}
-		else
-		{
-			spawnedObjMat.material.color = Color.green;
-		}
-	}
-
-	IEnumerator ObjLifeReduction()
-	{
-		float time = objLife;
-		if(!SwipeManager.Instance.couldBeSwipe)
-		{
-			while (time > 0)
-			{
-				time -= Time.deltaTime;
-				yield return new WaitForEndOfFrame();
-			}
-
-			Destroy(spawnedObj);
-			SwipeManager.Instance.spawnedObj = null;
-			GameplayManager.Instance.ResetScore();
+			spawnDelay -= Time.deltaTime;
+			yield return new WaitForEndOfFrame();
 		}
 
-		StopCoroutine("ObjLifeReduction");
+		if (GameplayManager.Instance.timeAttackGame || GameplayManager.Instance.survivalGame)
+		{
+			spawnedObj.GetComponent<Shape>().Kill();
+			canSpawn = true;
+		}
+
+		StopCoroutine("CanSpawnCoroutine");
 	}
 }

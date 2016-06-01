@@ -7,20 +7,20 @@ public class SwipeManager : MonoBehaviour
 	public delegate void OnSwipeDelegate(int direction);
 	public static SwipeManager Instance;
 
-	public GameObject	spawnedObj;
-	public float		speed = 10.0f;
-	public bool			couldBeSwipe;
+	public Shape			spawnedObj;
+	public float			swipeSpeed = 10.0f;
+	public bool				couldBeSwipe;
 
-	public OnSwipeDelegate OnSwipe;
+	public OnSwipeDelegate	OnSwipe;
 
-	private Vector2		startPos;
-	private float		startTime;
+	private Vector2			startPos;
+	private float			startTime;
 	[SerializeField]
-	private float		comfortZone = 10.0f;
+	private float			comfortZone = 10.0f;
 	[SerializeField]
-	private float		maxSwipeTime = 1.0f;
+	private float			maxSwipeTime = 1.0f;
 	[SerializeField]
-	private float		minSwipeDist = 44.0f;
+	private float			minSwipeDist = 44.0f;
 
 	void Awake ()
 	{
@@ -65,8 +65,6 @@ public class SwipeManager : MonoBehaviour
 				{
 					OnSwipe(0);
 				}
-
-				couldBeSwipe = false;
 			}
 		}
 	#endif
@@ -125,38 +123,33 @@ public class SwipeManager : MonoBehaviour
 
 	public void MoveTo(int _shapeId)
 	{
-		if(GameplayManager.Instance.timeAttackGame || GameplayManager.Instance.survivalGame)
+		couldBeSwipe = false;
+
+		if (GameplayManager.Instance.timeAttackGame || GameplayManager.Instance.survivalGame)
 			StartCoroutine(MoveInGameplayCoroutine(_shapeId));
 	}
 
 	public IEnumerator MoveInGameplayCoroutine(int __shapeId)
 	{
-		while(spawnedObj.transform.position != GameplayManager.Instance.shapes[__shapeId].transform.position)
+		while (spawnedObj.transform.position != GameplayManager.Instance.shapes[__shapeId].transform.position)
 		{
-			spawnedObj.transform.position = Vector2.MoveTowards(spawnedObj.transform.position, GameplayManager.Instance.shapes[__shapeId].transform.position, speed * Time.deltaTime);
+			spawnedObj.transform.position = Vector2.MoveTowards(spawnedObj.transform.position, GameplayManager.Instance.shapes[__shapeId].transform.position, swipeSpeed * Time.deltaTime);
 			yield return new WaitForEndOfFrame();
 		}
 
-		if (spawnedObj.transform.tag == GameplayManager.Instance.shapes[__shapeId].transform.tag && SpawnManager.Instance.spawnedObjMat.material.color == Color.green)
+		if (spawnedObj.transform.tag == GameplayManager.Instance.shapes[__shapeId].transform.tag && spawnedObj.myRend.material.color == Color.green)
 		{
 			GameplayManager.Instance.AddScore();
 		}
-		else if (spawnedObj.transform.tag != GameplayManager.Instance.shapes[__shapeId].transform.tag && SpawnManager.Instance.spawnedObjMat.material.color == Color.red)
+		else if (spawnedObj.transform.tag != GameplayManager.Instance.shapes[__shapeId].transform.tag && spawnedObj.myRend.material.color == Color.red)
 		{
 			GameplayManager.Instance.AddScore();
 		}
 		else
 		{
-			if (GameplayManager.Instance.timeAttackGame)
-				GameplayManager.Instance.ResetScore();
-			else
-			{
-				GameplayManager.Instance.GameOver();
-				StopCoroutine("MoveInGameplayCoroutine");
-			}
+			GameplayManager.Instance.FailedSwipeOrEndObjLife();
 		}
-		Destroy(spawnedObj);
-		SpawnManager.Instance.canSpawn = true;
+		StartCoroutine(SpawnManager.Instance.CanSpawnCoroutine());
 		StopCoroutine("MoveInGameplayCoroutine");
 	}
 }

@@ -48,6 +48,20 @@ public class GameplayManager : MonoBehaviour
 		StartNewGame();
 	}
 
+	public void FailedSwipeOrEndObjLife()
+	{
+		if (timeAttackGame)
+		{
+			ResetScore();
+			StartCoroutine(SpawnManager.Instance.CanSpawnCoroutine());
+		}
+		else
+		{
+			GameOver();
+			CustomStopAllGameplayCoroutines();
+		}
+	}
+
 	public void StartNewGame()
 	{
 		scoreText.text = actualScore.ToString();
@@ -59,14 +73,20 @@ public class GameplayManager : MonoBehaviour
 		SpawnManager.Instance.canSpawn = false;
 		timeAttackGame = false;
 		survivalGame = false;
-		clockText.text = null;
-		Destroy(SwipeManager.Instance.spawnedObj);
 
-		if(actualScore > highScore)
+		if (actualScore > highScore)
 		{
 			highScore = actualScore;
-			scoreText.text = highScore.ToString();
 		}
+		
+		scoreText.text = highScore.ToString();
+		actualScore = 0;
+		score = 0;
+		clockText.text = null;
+
+		if(SpawnManager.Instance.spawnedObj)
+			SpawnManager.Instance.spawnedObj.GetComponent<Shape>().Kill();
+
 
 		MenuManager.GetInstance().bringInPanel(MenuManager.GetInstance().activeMenuPanel);
 
@@ -86,6 +106,12 @@ public class GameplayManager : MonoBehaviour
 	public void ResetScore()
 	{
 		score = 0;
+	}
+
+	public void CustomStopAllGameplayCoroutines()
+	{
+		StopCoroutine("SpawnManager.Instance.CanSpawnCoroutine");
+		StopCoroutine("SwipeManager.Instance.MoveInGameplayCoroutine");
 	}
 
 	IEnumerator ReduceClock()
