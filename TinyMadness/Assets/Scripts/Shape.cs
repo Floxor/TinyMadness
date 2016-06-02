@@ -6,8 +6,20 @@ public class Shape : MonoBehaviour
 	public float		lifeTime = 5;
 	public Renderer		myRend;
 
+	private Animator	myAnimator;
+	[SerializeField]
+	private string		smallerAnim;
+	[SerializeField]
+	private string		biggerAnim;
+
+	void Awake ()
+	{
+		myAnimator = GetComponent<Animator>();
+	}
+
 	void Start ()
 	{
+		myAnimator.SetTrigger(biggerAnim);
 		StartCoroutine(ReduceLife());
 		myRend = gameObject.GetComponent<Renderer>();
 		RandomObjColor();
@@ -44,7 +56,8 @@ public class Shape : MonoBehaviour
 			yield return new WaitForEndOfFrame();
 		}
 
+		myAnimator.SetTrigger(smallerAnim);
 		GameplayManager.Instance.FailedSwipeOrEndObjLife();
-		StopCoroutine("ReduceLife");
+		//StopCoroutine("ReduceLife");
 	}
 }
