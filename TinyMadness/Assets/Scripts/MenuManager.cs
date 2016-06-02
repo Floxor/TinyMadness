@@ -15,6 +15,8 @@ public class MenuManager : MonoBehaviour
 
 	private bool quitIsUp = false;
 
+	public ClockTimer clockTimeOut;
+
 	void Awake()
 	{
 		if(_instance != null)
@@ -95,7 +97,7 @@ public class MenuManager : MonoBehaviour
 			else if (directionToElement.y > 0)
 				swipeCallbacks[1] = menuElements[i];
 			//else
-			//	swipeCallbacks[3] = menuElements[i];
+			//	swipeCallbacks[3] = menuElements[i]; // reserved by quit panel
 		}
 	}
 
@@ -121,18 +123,18 @@ public class MenuManager : MonoBehaviour
 			{
 				Debug.Log("quit");
 				Application.Quit();
-				return;
 			}
-
-			BringQuitPopup();
+			else
+				BringQuitPopup();
 		}
 		else if (swipeCallbacks[swipeDirection] != null)
 		{
 			if (quitIsUp)
 				bringOutPanel(menuPanels[3]);
-		
+			else
+				swipeCallbacks[swipeDirection].callback();
+			
 			quitIsUp = false;
-			swipeCallbacks[swipeDirection].callback();
 		}
 	}
 
