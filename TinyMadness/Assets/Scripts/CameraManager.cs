@@ -19,7 +19,8 @@ public enum ShakeLength
 
 public class CameraManager : MonoBehaviour
 {
-	
+	private static CameraManager _instance;
+	private bool _alreadyInstantiated;
 
 	private Vector3 _screenShakeOffset = Vector3.zero;
 
@@ -79,5 +80,10 @@ public class CameraManager : MonoBehaviour
 		this._shakeTimeLeft = 0;
 		this._screenShakeOffset = Vector3.zero;
 		this._isShaking = false;
+	}
+
+	public static CameraManager GetInstance()
+	{
+		return _instance;
 	}
 }
