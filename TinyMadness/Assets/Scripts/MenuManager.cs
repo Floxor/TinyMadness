@@ -129,7 +129,10 @@ public class MenuManager : MonoBehaviour
 		else if (swipeCallbacks[swipeDirection] != null)
 		{
 			if (quitIsUp)
+			{ 
 				bringOutPanel(menuPanels[3]);
+				return;
+			}
 		
 			quitIsUp = false;
 			swipeCallbacks[swipeDirection].callback();
