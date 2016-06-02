@@ -6,14 +6,6 @@ public class GameplayManager : MonoBehaviour
 {
 	public static GameplayManager Instance;
 
-	public enum GameMode
-	{
-		TimeAttack,
-		Survival,
-		Null
-	}
-	public GameMode previousGameMode;
-
 	public GameObject[] shapes;
 	public Text			scoreText;
 	public Text			clockText;
@@ -56,10 +48,8 @@ public class GameplayManager : MonoBehaviour
 		StartNewGame();
 	}
 
-
 	public void StartNewGame()
 	{
-		previousGameMode = GameMode.Null;
 		scoreText.text = actualScore.ToString();
 		SpawnManager.Instance.canSpawn = true;
 		SwipeManager.Instance.canSwipe = true;
@@ -83,14 +73,6 @@ public class GameplayManager : MonoBehaviour
 	{
 		SpawnManager.Instance.canSpawn = false;
 
-		if(timeAttackGame)
-		{
-			previousGameMode = GameMode.TimeAttack;
-		}
-		if(survivalGame)
-		{
-			previousGameMode = GameMode.Survival;
-		}
 		timeAttackGame = false;
 		survivalGame = false;
 

@@ -78,15 +78,7 @@ public class GameManager : MonoBehaviour
 
 	public void Replay()
 	{
-		if (GameplayManager.Instance.previousGameMode == GameplayManager.GameMode.TimeAttack)
-		{
-			StartTimeAttackGame();
-		}
-
-		if (GameplayManager.Instance.previousGameMode == GameplayManager.GameMode.Survival)
-		{
-			StartSurvivalGame();
-		}
+		StartLastGameModeUsed();
 	}
 
 	public static GameManager GetInstance()
