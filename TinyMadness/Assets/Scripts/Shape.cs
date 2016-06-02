@@ -11,6 +11,7 @@ public class Shape : MonoBehaviour
 		StartCoroutine(ReduceLife());
 		myRend = gameObject.GetComponent<Renderer>();
 		RandomObjColor();
+		MenuManager.GetInstance().clockTimeOut.LaunchCountDown(lifeTime);
 	}
 	
 	//void Update ()

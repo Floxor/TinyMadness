@@ -15,6 +15,8 @@ public class MenuManager : MonoBehaviour
 
 	private bool quitIsUp = false;
 
+	public ClockTimer clockTimeOut;
+
 	void Awake()
 	{
 		if(_instance != null)

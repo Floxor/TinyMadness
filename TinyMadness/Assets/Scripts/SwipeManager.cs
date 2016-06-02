@@ -54,22 +54,13 @@ public class SwipeManager : MonoBehaviour
 			if(swipeTime < maxSwipeTime)
 			{
 				if (swipeAngle < 45)
-				{
 					OnSwipe(2);
-				}
-				else if (swipeAngle > 45 && swipeAngle < 135 && (Mathf.Sign(Input.mousePosition.y - startPos.y) == 1))
-				{
-					OnSwipe(1);
-				}
 				else if (swipeAngle > 135)
-				{
 					OnSwipe(0);
-				}
-				else if (swipeAngle > 45 && swipeAngle < 135 && (Mathf.Sign(Input.mousePosition.y - startPos.y) == -1))
-				{
-					if (!GameplayManager.Instance.timeAttackGame && !GameplayManager.Instance.survivalGame)
-						OnSwipe(3);
-				}
+				else if (Input.mousePosition.y - startPos.y > 0)
+					OnSwipe(1);
+				else
+					OnSwipe(3);
 			}
 		}
 	#endif
@@ -106,27 +97,18 @@ public class SwipeManager : MonoBehaviour
 					if (swipeTime < maxSwipeTime)
 					{
 						if (swipeAngle < 45)
-						{
 							OnSwipe(2);
-						}
-						else if (swipeAngle > 45 && swipeAngle < 135 && (Mathf.Sign(Input.mousePosition.y - startPos.y) == 1))
-						{
-							OnSwipe(1);
-						}
 						else if (swipeAngle > 135)
-						{
 							OnSwipe(0);
-						}
-						else if (swipeAngle > 45 && swipeAngle < 135 && (Mathf.Sign(Input.mousePosition.y - startPos.y) == -1))
-						{
-							if (!GameplayManager.Instance.timeAttackGame && !GameplayManager.Instance.survivalGame)
-								OnSwipe(3);
-						}
+						else if (Input.mousePosition.y - startPos.y > 0)
+							OnSwipe(1);
+						else
+							OnSwipe(3);
 					}
 					break;
 			}
 		}
-	#endif
+#endif
 	}
 
 	public void MoveTo(int _shapeId)
