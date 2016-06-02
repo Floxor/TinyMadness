@@ -121,6 +121,9 @@ public class SwipeManager : MonoBehaviour
 
 	public IEnumerator MoveInGameplayCoroutine(int __shapeId)
 	{
+		if (__shapeId == 3)
+			yield break;
+
 		if(canSwipe)
 		{
 			canSwipe = false;

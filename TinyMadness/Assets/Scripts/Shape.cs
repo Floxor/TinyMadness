@@ -23,18 +23,13 @@ public class Shape : MonoBehaviour
 		StartCoroutine(ReduceLife());
 		myRend = gameObject.GetComponent<Renderer>();
 		RandomObjColor();
-		MenuManager.GetInstance().clockTimeOut.LaunchCountDown(lifeTime);
+		MenuManager.GetInstance().clockTimeOut.Launch(lifeTime);
 	}
-	
-	//void Update ()
-	//{
-	
-	//}
 
 	public void RandomObjColor()
 	{
-		int randomInt = Random.Range(0, 2);
-		if (randomInt % 2 == 0)
+		int randomInt = Random.Range(0, 3);
+		if (randomInt == 0)
 		{
 			myRend.material.color = Color.red;
 		}

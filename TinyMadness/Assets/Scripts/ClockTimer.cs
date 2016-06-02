@@ -24,7 +24,12 @@ public class ClockTimer : MonoBehaviour
 		_fillImage.fillAmount = _timeLeft / _timeMax;
 	}
 
-	public void LaunchCountDown(float maxTime) 
+	public void Stop()
+	{
+		_timeLeft = 0;
+	}
+
+	public void Launch(float maxTime) 
 	{
 		_timeMax = maxTime;
 		_timeLeft = maxTime;
