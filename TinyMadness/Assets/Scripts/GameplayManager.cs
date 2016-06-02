@@ -59,7 +59,7 @@ public class GameplayManager : MonoBehaviour
 	{
 		if (timeAttackGame)
 		{
-			ResetScore();
+			ReduceScore();
 			StartCoroutine(SpawnManager.Instance.CanSpawnCoroutine());
 		}
 		else
@@ -72,7 +72,7 @@ public class GameplayManager : MonoBehaviour
 	public void GameOver()
 	{
 		SpawnManager.Instance.canSpawn = false;
-
+		MenuManager.GetInstance().clockTimeOut.Stop();
 		timeAttackGame = false;
 		survivalGame = false;
 
