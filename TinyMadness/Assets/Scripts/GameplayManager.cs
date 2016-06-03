@@ -91,7 +91,8 @@ public class GameplayManager : MonoBehaviour
 		if (timeAttackGame)
 		{
 			ReduceScore();
-			StartCoroutine(SpawnManager.Instance.CanSpawnCoroutine());
+			if(!SpawnManager.Instance.spawnedObj)
+				StartCoroutine(SpawnManager.Instance.CanSpawnCoroutine());
 		}
 		else
 		{
