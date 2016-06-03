@@ -3,7 +3,7 @@ using System.Collections;
 
 public class Shape : MonoBehaviour
 {
-	public float		lifeTime = 5;
+	public float		lifeTime = 3;
 	public Renderer		myRend;
 
 	private Animator	myAnimator;
@@ -46,14 +46,21 @@ public class Shape : MonoBehaviour
 
 	IEnumerator ReduceLife()
 	{
-		while (lifeTime > 0)
+		if(SwipeManager.Instance.canSwipe)
 		{
-			lifeTime -= Time.deltaTime;
-			yield return new WaitForEndOfFrame();
+			while (lifeTime > 0)
+			{
+				lifeTime -= Time.deltaTime;
+				yield return new WaitForEndOfFrame();
+			}
+			myAnimator.SetTrigger(smallerAnim);
+			GameplayManager.Instance.FailedSwipeOrEndObjLife();
+			StopCoroutine("ReduceLife");
 		}
-
-		myAnimator.SetTrigger(smallerAnim);
-		GameplayManager.Instance.FailedSwipeOrEndObjLife();
-		//StopCoroutine("ReduceLife");
+		else
+		{
+			myAnimator.SetTrigger(smallerAnim);
+			GameplayManager.Instance.FailedSwipeOrEndObjLife();
+		}
 	}
 }

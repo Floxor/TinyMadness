@@ -13,7 +13,7 @@ public class SpawnManager : MonoBehaviour
 
 	public bool				canSpawn = false;
 	public float			savedSpawnDelay = 0.0f;
-	public float			spawnDelay = 10.0f;
+	public float			spawnDelay = 0.3f;
 
 	void Awake ()
 	{
