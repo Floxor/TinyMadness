@@ -32,8 +32,22 @@ public class CameraManager : MonoBehaviour
 	private float _shakeTimeLeft = 0;
 	private float _activeShakeForce = 0;
 
+	void Awake()
+	{
+		if (_instance != null)
+			_alreadyInstantiated = true;
+		else
+			_instance = this;
+	}
+
 	void Start()
 	{
+		if (_alreadyInstantiated)
+		{
+			Destroy(gameObject);
+			return;
+		}
+
 		_targetPosition = transform.position;
 		_gameUI = GameObject.FindGameObjectWithTag("TransformUI").GetComponent<RectTransform>();
 		_UItargetPosition = _gameUI.position;
