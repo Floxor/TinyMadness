@@ -126,7 +126,7 @@ public class GameplayManager : MonoBehaviour
 	public void ReduceScore()
 	{
 		score -= 1;
-		//CameraManager.GetInstance().ScreenShake(ShakeForce.medium, ShakeLength.shortTime);
+		CameraManager.GetInstance().ScreenShake(ShakeForce.medium, ShakeLength.shortTime);
 		if (score < 0)
 			score = 0;
 	}
