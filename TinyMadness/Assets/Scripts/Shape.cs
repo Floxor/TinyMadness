@@ -29,7 +29,7 @@ public class Shape : MonoBehaviour
 	public void RandomObjColor()
 	{
 		int randomInt = Random.Range(0, 3);
-		if (randomInt == 0)
+		if (randomInt%2 == 0)
 		{
 			myRend.material.color = Color.red;
 		}
@@ -46,6 +46,7 @@ public class Shape : MonoBehaviour
 
 	IEnumerator ReduceLife()
 	{
+		lifeTime = lifeTime - GameplayManager.Instance.difficultyFactor;
 		if(SwipeManager.Instance.canSwipe)
 		{
 			while (lifeTime > 0)

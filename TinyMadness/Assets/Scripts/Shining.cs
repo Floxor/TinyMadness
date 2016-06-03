@@ -3,8 +3,8 @@ using System.Collections;
 
 public class Shining : MonoBehaviour
 {
-	private Animator myAnimator;
-	public string shineAnim;
+	private Animator	myAnimator;
+	public string		shineAnim;
 
 	void Start ()
 	{

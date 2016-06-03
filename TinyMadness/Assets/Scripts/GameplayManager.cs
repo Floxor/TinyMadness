@@ -6,22 +6,45 @@ public class GameplayManager : MonoBehaviour
 {
 	public static GameplayManager Instance;
 
+	[System.Serializable]
+	public class ShapesChecker
+	{
+		public GameObject shape;
+		public string shapeTag = "";
+		public ParticleSystem greenParticules;
+		public ParticleSystem redParticules;
+	}
+
+	public ShapesChecker[] shapeCheckers;
+
 	public GameObject[] shapes;
 	public Text			scoreText;
 	public Text			clockText;
-	public float		score = 0;
-	public float		actualScore = 0;
 	public float		highScore = 0;
 	public bool			survivalGame = false;
 	public bool			timeAttackGame = false;
-	public float		clock = 60.0f;
 	public float		actualClock;
+	public float		difficultyFactor = 0.0f;
+
+	private float		score = 0;
+	private float		actualScore = 0;
+	[SerializeField]
+	private float		clock = 60.0f;
+	private float		savedDifficultyFactor;
+	[SerializeField]
+	private float		difficultyClock = 40.0f;
 
 	void Start ()
 	{
 		Instance = this;
 		scoreText.text = highScore.ToString();
 		clockText.text = null;
+		for (int i = 0; i < shapeCheckers.Length; i++)
+		{
+			shapeCheckers[i].shapeTag = shapeCheckers[i].shape.transform.tag;
+			shapeCheckers[i].greenParticules.transform.position = shapeCheckers[i].shape.transform.position;
+			shapeCheckers[i].redParticules.transform.position = shapeCheckers[i].shape.transform.position;
+		}
 	}
 
 	void Update()
@@ -31,8 +54,15 @@ public class GameplayManager : MonoBehaviour
 			actualScore = score;
 			scoreText.text = actualScore.ToString();
 		}
+
 		if(timeAttackGame)
 			clockText.text = actualClock.ToString("0.00");
+
+		if(savedDifficultyFactor != difficultyFactor)
+		{
+			savedDifficultyFactor = difficultyFactor;
+			StartCoroutine(DifficultyCoroutine());
+		}
 	}
 
 	public void GoTimeAttackGame()
@@ -46,6 +76,7 @@ public class GameplayManager : MonoBehaviour
 	{
 		survivalGame = true;
 		StartNewGame();
+		StartCoroutine(DifficultyCoroutine());
 	}
 
 	public void StartNewGame()
@@ -73,6 +104,8 @@ public class GameplayManager : MonoBehaviour
 	{
 		SpawnManager.Instance.canSpawn = false;
 		MenuManager.GetInstance().clockTimeOut.Stop();
+		StopCoroutine("DifficultyCoroutine");
+		difficultyFactor = savedDifficultyFactor = 0.0f;
 		timeAttackGame = false;
 		survivalGame = false;
 
@@ -84,7 +117,7 @@ public class GameplayManager : MonoBehaviour
 		scoreText.text = highScore.ToString();
 		actualScore = 0;
 		score = 0;
-		clockText.text = null;
+		clockText.text = "";
 
 		if(SpawnManager.Instance.spawnedObj)
 			SpawnManager.Instance.spawnedObj.GetComponent<Shape>().Kill();
@@ -127,5 +160,18 @@ public class GameplayManager : MonoBehaviour
 		actualClock = 0;
 		GameOver();
 		StopCoroutine("ReduceClock");
+	}
+
+	IEnumerator DifficultyCoroutine()
+	{
+		float timer = difficultyClock;
+		while(timer > 0)
+		{
+			timer -= Time.deltaTime;
+			yield return new WaitForEndOfFrame();
+		}
+		difficultyFactor += 0.25f;
+		Debug.Log(difficultyFactor);
+		StopCoroutine("DifficultyCoroutine");
 	}
 }

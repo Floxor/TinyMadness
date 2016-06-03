@@ -55,6 +55,7 @@ public class SpawnManager : MonoBehaviour
 
 		if (GameplayManager.Instance.timeAttackGame || GameplayManager.Instance.survivalGame)
 		{
+			//spawnedObj.GetComponent<Shape>().ActivateParticules();
 			spawnedObj.GetComponent<Shape>().Kill();
 			canSpawn = true;
 			SwipeManager.Instance.canSwipe = true;

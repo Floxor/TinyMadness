@@ -20,8 +20,8 @@ public class SwipeManager : MonoBehaviour
 	//private float			comfortZone = 10.0f;
 	[SerializeField]
 	private float			maxSwipeTime = 1.0f;
-	[SerializeField]
-	private float			minSwipeDist = 44.0f;
+	//[SerializeField]
+	//private float			minSwipeDist = 44.0f;
 
 	void Awake ()
 	{
@@ -77,13 +77,12 @@ public class SwipeManager : MonoBehaviour
 					startTime = Time.time;
 					break;
 
-				//case TouchPhase.Moved:
-				//	if (Vector2.Angle(Vector3.right, (Vector2)Input.mousePosition - startPos) > comfortZone)
-				//	{
-				//		couldBeSwipe = false;
-				//		Camera.main.backgroundColor = Color.red;
-				//	}
-				//	break;
+				case TouchPhase.Moved:
+					if (Time.time - startTime < maxSwipeTime)
+					{
+						couldBeSwipe = false;
+					}
+					break;
 
 				case TouchPhase.Stationary:
 					couldBeSwipe = false;
@@ -137,10 +136,12 @@ public class SwipeManager : MonoBehaviour
 			if (spawnedObj.transform.tag == GameplayManager.Instance.shapes[__shapeId].transform.tag && spawnedObj.myRend.material.color == Color.green)
 			{
 				GameplayManager.Instance.AddScore();
+				GameplayManager.Instance.shapeCheckers[__shapeId].greenParticules.Play();
 			}
 			else if (spawnedObj.transform.tag != GameplayManager.Instance.shapes[__shapeId].transform.tag && spawnedObj.myRend.material.color == Color.red)
 			{
 				GameplayManager.Instance.AddScore();
+				GameplayManager.Instance.shapeCheckers[__shapeId].redParticules.Play();
 			}
 			else
 			{
