@@ -17,6 +17,12 @@ public class MenuManager : MonoBehaviour
 
 	public ClockTimer clockTimeOut;
 
+	[Space()]
+	[SerializeField]
+	private Text TimeAttackHighScoreValue;
+	[SerializeField]
+	private Text SurvivalHighScoreValue;
+
 	void Awake()
 	{
 		if(_instance != null)
@@ -164,6 +170,16 @@ public class MenuManager : MonoBehaviour
 	{
 		quitIsUp = true;
 		bringInPanel(menuPanels[3]);
+	}
+
+	public void SetTimeAttackHighScore(int score)
+	{
+		TimeAttackHighScoreValue.text = "" + score;
+	}
+
+	public void SurvivalHighScore(int score)
+	{
+		SurvivalHighScoreValue.text = "" + score;
 	}
 
 	public static MenuManager GetInstance()
