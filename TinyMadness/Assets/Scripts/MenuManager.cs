@@ -29,6 +29,9 @@ public class MenuManager : MonoBehaviour
 			_alreadyInstantiated = true;
 		else
 			_instance = this;
+
+		SetTimeAttackHighScore(PlayerPrefs.GetFloat("HighScoreTimeAttack"));
+		SetSurvivalHighScore(PlayerPrefs.GetFloat("HighScoreSurvival"));
 	}
 
 	void Start()
@@ -172,14 +175,16 @@ public class MenuManager : MonoBehaviour
 		bringInPanel(menuPanels[3]);
 	}
 
-	public void SetTimeAttackHighScore(int score)
+	public void SetTimeAttackHighScore(float score)
 	{
 		TimeAttackHighScoreValue.text = "" + score;
+		PlayerPrefs.SetFloat("HighScoreTimeAttack", score);
 	}
 
-	public void SurvivalHighScore(int score)
+	public void SetSurvivalHighScore(float score)
 	{
 		SurvivalHighScoreValue.text = "" + score;
+		PlayerPrefs.SetFloat("HighScoreSurvival", score);
 	}
 
 	public static MenuManager GetInstance()

@@ -47,8 +47,6 @@ public class SpawnManager : MonoBehaviour
 
 	public IEnumerator CanSpawnCoroutine()
 	{
-		spawnedObj.GetComponent<Shape>().StopCoroutine(spawnedObj.GetComponent<Shape>().ReduceLife());
-
 		while(spawnDelay > 0 && !canSpawn)
 		{
 			spawnDelay -= Time.deltaTime;
@@ -62,7 +60,6 @@ public class SpawnManager : MonoBehaviour
 			canSpawn = true;
 			SwipeManager.Instance.canSwipe = true;
 		}
-
 		StopCoroutine("CanSpawnCoroutine");
 	}
 }

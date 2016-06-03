@@ -25,6 +25,8 @@ public class GameplayManager : MonoBehaviour
 	public bool			timeAttackGame = false;
 	public float		actualClock;
 	public float		difficultyFactor = 0.0f;
+	public float		highScoreTimeAttack;
+	public float		highScoreSurvivalGame;
 
 	private float		score = 0;
 	private float		actualScore = 0;
@@ -101,22 +103,14 @@ public class GameplayManager : MonoBehaviour
 
 	public void GameOver()
 	{
+		SendHighScore();
+
 		SpawnManager.Instance.canSpawn = false;
 		MenuManager.GetInstance().clockTimeOut.Stop();
 		StopCoroutine("DifficultyCoroutine");
 		difficultyFactor = savedDifficultyFactor = 0.0f;
 		timeAttackGame = false;
 		survivalGame = false;
-
-		if (actualScore > highScore)
-		{
-			highScore = actualScore;
-		}
-		
-		scoreText.text = highScore.ToString();
-		actualScore = 0;
-		score = 0;
-		clockText.text = "";
 
 		if(SpawnManager.Instance.spawnedObj)
 			SpawnManager.Instance.spawnedObj.GetComponent<Shape>().Kill();
@@ -139,7 +133,28 @@ public class GameplayManager : MonoBehaviour
 
 	public void ResetScore()
 	{
+		actualScore = 0;
 		score = 0;
+		scoreText.text = "";
+	}
+
+	public void SendHighScore()
+	{
+		if(timeAttackGame)
+		{
+			if (actualScore > highScoreTimeAttack)
+			{
+				MenuManager.GetInstance().SetTimeAttackHighScore(actualScore);
+			}
+		}
+		if (survivalGame)
+		{
+			if (actualScore > highScoreSurvivalGame)
+			{
+				MenuManager.GetInstance().SetSurvivalHighScore(actualScore);
+			}
+		}
+		ResetScore();
 	}
 
 	public void CustomStopAllGameplayCoroutines()
@@ -170,7 +185,6 @@ public class GameplayManager : MonoBehaviour
 			yield return new WaitForEndOfFrame();
 		}
 		difficultyFactor += 0.25f;
-		Debug.Log(difficultyFactor);
 		StopCoroutine("DifficultyCoroutine");
 	}
 }
