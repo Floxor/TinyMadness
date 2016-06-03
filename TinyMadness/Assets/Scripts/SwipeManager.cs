@@ -146,6 +146,9 @@ public class SwipeManager : MonoBehaviour
 			else
 			{
 				GameplayManager.Instance.FailedSwipeOrEndObjLife();
+				#if UNITY_ANDROID
+					Handheld.Vibrate();
+				#endif
 			}
 			StartCoroutine(SpawnManager.Instance.CanSpawnCoroutine());
 			StopCoroutine("MoveInGameplayCoroutine");

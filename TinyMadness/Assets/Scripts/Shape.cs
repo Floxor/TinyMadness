@@ -11,6 +11,7 @@ public class Shape : MonoBehaviour
 	private string		smallerAnim;
 	[SerializeField]
 	private string		biggerAnim;
+	private float		minLifeTime = 1;
 
 	void Awake ()
 	{
@@ -41,12 +42,18 @@ public class Shape : MonoBehaviour
 
 	public void Kill()
 	{
+		SpawnManager.Instance.spawnedObj = null;
 		Destroy(this.gameObject);
 	}
 
-	IEnumerator ReduceLife()
+	public IEnumerator ReduceLife()
 	{
 		lifeTime = lifeTime - GameplayManager.Instance.difficultyFactor;
+		if(lifeTime < minLifeTime)
+		{
+			lifeTime = minLifeTime;
+		}
+
 		if(SwipeManager.Instance.canSwipe)
 		{
 			while (lifeTime > 0)
@@ -56,12 +63,14 @@ public class Shape : MonoBehaviour
 			}
 			myAnimator.SetTrigger(smallerAnim);
 			GameplayManager.Instance.FailedSwipeOrEndObjLife();
+			StartCoroutine(SpawnManager.Instance.CanSpawnCoroutine());
 			StopCoroutine("ReduceLife");
 		}
 		else
 		{
 			myAnimator.SetTrigger(smallerAnim);
 			GameplayManager.Instance.FailedSwipeOrEndObjLife();
+			StartCoroutine(SpawnManager.Instance.CanSpawnCoroutine());
 		}
 	}
 }

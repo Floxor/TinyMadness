@@ -47,6 +47,8 @@ public class SpawnManager : MonoBehaviour
 
 	public IEnumerator CanSpawnCoroutine()
 	{
+		spawnedObj.GetComponent<Shape>().StopCoroutine(spawnedObj.GetComponent<Shape>().ReduceLife());
+
 		while(spawnDelay > 0 && !canSpawn)
 		{
 			spawnDelay -= Time.deltaTime;
