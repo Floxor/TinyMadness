@@ -59,7 +59,7 @@ public class SwipeManager : MonoBehaviour
 					OnSwipe(0);
 				else if (Input.mousePosition.y - startPos.y > 0)
 					OnSwipe(1);
-				else
+				else if (Input.mousePosition.y - startPos.y < 0)
 					OnSwipe(3);
 			}
 		}
@@ -101,7 +101,7 @@ public class SwipeManager : MonoBehaviour
 							OnSwipe(0);
 						else if (Input.mousePosition.y - startPos.y > 0)
 							OnSwipe(1);
-						else
+						else if (Input.mousePosition.y - startPos.y < 0)
 							OnSwipe(3);
 					}
 					break;
