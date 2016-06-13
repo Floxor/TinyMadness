@@ -39,8 +39,8 @@ public class GameplayManager : MonoBehaviour
 	void Start ()
 	{
 		Instance = this;
-		scoreText.text = highScore.ToString();
-		clockText.text = null;
+		scoreText.text = "";
+		clockText.text = "";
 		for (int i = 0; i < shapeCheckers.Length; i++)
 		{
 			shapeCheckers[i].shapeTag = shapeCheckers[i].shape.transform.tag;
