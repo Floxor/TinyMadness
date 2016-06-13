@@ -47,6 +47,9 @@ public class GameplayManager : MonoBehaviour
 			shapeCheckers[i].greenParticules.transform.position = shapeCheckers[i].shape.transform.position;
 			shapeCheckers[i].redParticules.transform.position = shapeCheckers[i].shape.transform.position;
 		}
+
+		highScoreTimeAttack = PlayerPrefs.GetFloat("HighScoreTimeAttack");
+		highScoreSurvivalGame = PlayerPrefs.GetFloat("HighScoreSurvival");
 	}
 
 	void Update()
@@ -105,6 +108,8 @@ public class GameplayManager : MonoBehaviour
 	{
 		SendHighScore();
 
+		clockText.text = "";
+
 		SpawnManager.Instance.canSpawn = false;
 		MenuManager.GetInstance().clockTimeOut.Stop();
 		StopCoroutine("DifficultyCoroutine");
@@ -145,6 +150,7 @@ public class GameplayManager : MonoBehaviour
 			if (actualScore > highScoreTimeAttack)
 			{
 				MenuManager.GetInstance().SetTimeAttackHighScore(actualScore);
+				highScoreTimeAttack = actualScore;
 			}
 		}
 		if (survivalGame)
@@ -152,6 +158,7 @@ public class GameplayManager : MonoBehaviour
 			if (actualScore > highScoreSurvivalGame)
 			{
 				MenuManager.GetInstance().SetSurvivalHighScore(actualScore);
+				highScoreSurvivalGame = actualScore;
 			}
 		}
 		ResetScore();
